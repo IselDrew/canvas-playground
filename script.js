@@ -1,8 +1,17 @@
-function draw() {
+var counter = 0;
+var assets = {
+    logo: 'https://images.icanvas.com/2d/3607.jpg'
+};
+var images = {};
+
+function createCanvas() {
     var canvas = document.querySelector('canvas');
     canvas.width = window.innerWidth; //makes full-page canvas area
     canvas.height = window.innerHeight;
+    return canvas;
+}
 
+function draw(canvas) {
     var ctx = canvas.getContext('2d');
 
     ctx.fillStyle = 'orange'; //orange rectangle
@@ -50,27 +59,38 @@ function draw() {
     ctx.beginPath();
     ctx.arc(160, 160, 25, 0, Math.PI * 2, true);
     ctx.fill();
-    
-    var img = new Image();
-    img.onload = function() { //Is that correct? We already have onload function below
-        ctx.drawImage(img, 210, 10, 300, 200);        
-    };
-    img.src = 'https://images.icanvas.com/2d/3607.jpg';
+
+    ctx.drawImage(images.logo, 210, 10, 300, 200);
 
     ctx.fillStyle = 'black';
     ctx.font = '48px papyrus';
     ctx.fillText('CANVAS PLAYGROUND', 10, 250);
 
     ctx.fillText('Hiding text', 450, 50); // why text hides behind the picture?
-
 }
 
-window.onload = function() {
-    draw();
-};
+function onLoadComplete() {
+    var canvas = createCanvas();
+    draw(canvas);
+}
 
+function loadAssets (hash, callback) {
+    var array = Object.keys(hash);
 
+    array.forEach(function(key) {
+        var img = new Image();
+        img.src = hash[key];
 
-// window.addEventListener("resize", function(event) {
-//     console.log("Resize", event);
-// });
+        img.addEventListener('load', function() {
+            ++counter;
+            images[key] = img;
+            if (array.length === counter) {
+                callback();
+            }
+        })
+    })
+}
+
+window.addEventListener('load', function() {
+    loadAssets(assets, onLoadComplete);
+});
