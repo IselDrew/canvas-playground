@@ -66,7 +66,67 @@ function draw(canvas) {
     ctx.font = '48px papyrus';
     ctx.fillText('CANVAS PLAYGROUND', 10, 250);
 
-    ctx.fillText('Hiding text', 450, 50); // why text hides behind the picture?
+    ctx.fillStyle = 'white'; //Dialogue cloud using Bezier curves
+    ctx.beginPath();
+    ctx.moveTo(510, 7);
+    //ctx.quadraticCurveTo(c1x, c1y, x, y)
+    ctx.quadraticCurveTo(425, 2, 420, 37);
+    ctx.quadraticCurveTo(415, 97, 450, 107);
+    ctx.quadraticCurveTo(450, 137, 400, 137);
+    ctx.quadraticCurveTo(475, 142, 470, 107);
+    ctx.quadraticCurveTo(550, 122, 550, 52);
+    ctx.quadraticCurveTo(550, 7, 510, 7);
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    ctx.shadowOffsetX = 3; //Text with shadow inside of dialogue cloud
+    ctx.shadowOffsetY = 3;
+    ctx.shadowBlur = 5;
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    ctx.fillStyle = 'black';
+    ctx.font = '40px Times New Roman';
+    ctx.lineWidth = 1;
+    ctx.strokeText('2+2=5', 430, 70);
+
+    ctx.shadowColor = 'rgba(0, 0, 0, 0)'; //Blue-black rectangles
+    ctx.fillRect(10, 255, 150, 150);   // Draw a rectangle with default settings
+    ctx.save();                        // Save the default state
+   
+    ctx.fillStyle = '#09F';            // Make changes to the settings
+    ctx.fillRect(25, 270, 120, 120);   // Draw a rectangle with new settings
+    ctx.save();                        // Save the current state
+
+    ctx.fillStyle = '#FFF';            // Make changes to the settings
+    ctx.globalAlpha = 0.5; 
+    ctx.fillRect(40, 285, 90, 90);     // Draw a rectangle with new settings
+  
+    ctx.restore();                     // Restore previous state
+    ctx.fillRect(55, 300, 60, 60);     // Draw a rectangle with restored settings
+  
+    ctx.restore();                     // Restore original state
+    ctx.fillRect(70, 315, 30, 30);     // Draw a rectangle with restored settings
+
+    for (var i = 0; i < 3; i++) { //few colorful rectangles
+        for (var j = 0; j < 3; j++) {
+            ctx.save();
+            ctx.fillStyle = 'rgb(' + (90 * i) + ', ' + (255 - 51 * i) + ', 255)';
+            ctx.translate(10 + j*30, 10 + i*30);
+            ctx.fillRect(168, 275, 25, 25);
+            ctx.restore();
+        }
+    }
+
+    ctx.fillStyle = '#0095DD';
+    ctx.fillRect(280, 255, 150, 150);  
+    ctx.translate(355, 330);            // translate to rectangle center 
+                                        // !x = x + 0.5 * width!
+                                        // !y = y + 0.5 * height!
+    ctx.rotate((Math.PI / 180) * 45);   // rotate
+    ctx.translate(-355, -330);          // translate back
+
+    ctx.fillStyle = '#4D4E53';          // draw grey rect
+    ctx.fillRect(280, 255, 150, 150);
 }
 
 function onLoadComplete() {
@@ -82,7 +142,7 @@ function loadAssets (hash, callback) {
         img.src = hash[key];
 
         img.addEventListener('load', function() {
-            ++counter;
+            counter++;
             images[key] = img;
             if (array.length === counter) {
                 callback();
@@ -92,5 +152,5 @@ function loadAssets (hash, callback) {
 }
 
 window.addEventListener('load', function() {
-    loadAssets(assets, onLoadComplete);
+  loadAssets(assets, onLoadComplete);
 });
