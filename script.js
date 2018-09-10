@@ -110,7 +110,7 @@ function draw(canvas) {
     for (var i = 0; i < 3; i++) { //few colorful rectangles
         for (var j = 0; j < 3; j++) {
             ctx.save();
-            ctx.fillStyle = 'rgb(' + (90 * i) + ', ' + (255 - 51 * i) + ', 255)';
+            ctx.fillStyle = `rgb(${90 * i}, ${255 - 51 * i}, 255)`;
             ctx.translate(10 + j*30, 10 + i*30);
             ctx.fillRect(168, 275, 25, 25);
             ctx.restore();
