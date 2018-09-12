@@ -1,17 +1,10 @@
-var counter = 0;
 var assets = {
     logo: 'https://images.icanvas.com/2d/3607.jpg'
 };
 var images = {};
+var canvas
 
-function createCanvas() {
-    var canvas = document.querySelector('canvas');
-    canvas.width = window.innerWidth; //makes full-page canvas area
-    canvas.height = window.innerHeight;
-    return canvas;
-}
-
-function draw(canvas) {
+function draw() {
     var ctx = canvas.getContext('2d');
 
     ctx.fillStyle = 'orange'; //orange rectangle
@@ -129,12 +122,22 @@ function draw(canvas) {
     ctx.fillRect(280, 255, 150, 150);
 }
 
+
+
 function onLoadComplete() {
-    var canvas = createCanvas();
-    draw(canvas);
+    canvas = document.querySelector('canvas');
+    resizeCanvas();
+    draw();
+}
+
+//makes full-page canvas area
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 }
 
 function loadAssets (hash, callback) {
+    var counter = 0;
     var array = Object.keys(hash);
 
     array.forEach(function(key) {
@@ -151,6 +154,33 @@ function loadAssets (hash, callback) {
     })
 }
 
+function KeyPressed() {
+    const keyName = event.key;
+    switch (event.key) {
+        case 'ArrowUp':
+            console.log(`You have pressed ${keyName}`);
+            break;
+        case 'ArrowDown':
+            console.log(`You have pressed ${keyName}`);
+            break;
+        case 'ArrowLeft':
+            console.log(`You have pressed ${keyName}`);
+            break;
+        case 'ArrowRight':
+            console.log(`You have pressed ${keyName}`);
+            break;
+    }
+}
+
 window.addEventListener('load', function() {
   loadAssets(assets, onLoadComplete);
+});
+
+window.addEventListener('resize', function() {
+    resizeCanvas();
+    draw();
+});
+
+document.addEventListener('keydown', function(event) {
+    KeyPressed();
 });
