@@ -154,21 +154,28 @@ function loadAssets (hash, callback) {
     })
 }
 
-function KeyPressed() {
-    const keyName = event.key;
-    switch (event.key) {
-        case 'ArrowUp':
-            console.log(`You have pressed ${keyName}`);
+function keyPressed(event) {
+    const keyName = event.keyCode;
+    switch (keyName) {
+        case 38:
+            console.log('You are going up');
             break;
-        case 'ArrowDown':
-            console.log(`You have pressed ${keyName}`);
+        case 40:
+            console.log('You are going down');
             break;
-        case 'ArrowLeft':
-            console.log(`You have pressed ${keyName}`);
+        case 37:
+            console.log('You are going left');
             break;
-        case 'ArrowRight':
-            console.log(`You have pressed ${keyName}`);
+        case 39:
+            console.log('You are going right');
             break;
+    }
+}
+
+function keyStop(event) {
+    const keyName = event.keyCode;
+    if(keyName > 36 && keyName < 41){
+        console.log('You stopped');
     }
 }
 
@@ -182,5 +189,9 @@ window.addEventListener('resize', function() {
 });
 
 document.addEventListener('keydown', function(event) {
-    KeyPressed();
+    keyPressed(event);
+});
+
+document.addEventListener('keyup', function(event) {
+    keyStop(event);
 });
