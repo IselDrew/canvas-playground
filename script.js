@@ -1,17 +1,10 @@
-var counter = 0;
 var assets = {
     logo: 'https://images.icanvas.com/2d/3607.jpg'
 };
 var images = {};
+var canvas
 
-function createCanvas() {
-    var canvas = document.querySelector('canvas');
-    canvas.width = window.innerWidth; //makes full-page canvas area
-    canvas.height = window.innerHeight;
-    return canvas;
-}
-
-function draw(canvas) {
+function draw() {
     var ctx = canvas.getContext('2d');
 
     ctx.fillStyle = 'orange'; //orange rectangle
@@ -129,12 +122,22 @@ function draw(canvas) {
     ctx.fillRect(280, 255, 150, 150);
 }
 
+
+
 function onLoadComplete() {
-    var canvas = createCanvas();
-    draw(canvas);
+    canvas = document.querySelector('canvas');
+    resizeCanvas();
+    draw();
+}
+
+//makes full-page canvas area
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 }
 
 function loadAssets (hash, callback) {
+    var counter = 0;
     var array = Object.keys(hash);
 
     array.forEach(function(key) {
@@ -151,6 +154,44 @@ function loadAssets (hash, callback) {
     })
 }
 
+function keyPressed(event) {
+    const keyName = event.keyCode;
+    switch (keyName) {
+        case 38:
+            console.log('You are going up');
+            break;
+        case 40:
+            console.log('You are going down');
+            break;
+        case 37:
+            console.log('You are going left');
+            break;
+        case 39:
+            console.log('You are going right');
+            break;
+    }
+}
+
+function keyStop(event) {
+    const keyName = event.keyCode;
+    if(keyName > 36 && keyName < 41){
+        console.log('You stopped');
+    }
+}
+
 window.addEventListener('load', function() {
   loadAssets(assets, onLoadComplete);
+});
+
+window.addEventListener('resize', function() {
+    resizeCanvas();
+    draw();
+});
+
+document.addEventListener('keydown', function(event) {
+    keyPressed(event);
+});
+
+document.addEventListener('keyup', function(event) {
+    keyStop(event);
 });
