@@ -2,7 +2,7 @@ var assets = {
     logo: 'https://images.icanvas.com/2d/3607.jpg'
 };
 var images = {};
-var canvas
+var canvas;
 
 function draw() {
     var ctx = canvas.getContext('2d');
