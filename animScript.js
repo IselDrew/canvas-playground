@@ -6,10 +6,17 @@ let yMovementPosition = 5;
 let xPosition = 150;
 let yPosition = 100;
 
-function draw()
-{
+const direction = {
+    up: false,
+    right: false,
+    down: false,
+    left: false
+}
+
+function draw() {
     ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, 500, 500);
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    move();
 
     ctx.beginPath();
     ctx.arc(xPosition, yPosition, 10, 0, 2 * Math.PI);
@@ -33,33 +40,62 @@ function onLoadComplete() {
 }
 
 
-function pressArrowKey(event)
-{
-    // console.log(event.keyCode)
-
-    switch (event.keyCode)
-    {
-        case 38:
-            yPosition -= yMovementPosition;
+function keyWasPressed (event) {
+    switch (event.keyCode) {
+        case 38://up
+            direction.up = true
             break;
-        case 40:
-            yPosition += yMovementPosition;
+        case 40://down
+            direction.down = true
             break;
-        case 37:
-            xPosition -= xMovementPosition;
+        case 37://left
+            direction.left = true
             break;
-        case 39:
-            xPosition += xMovementPosition;
+        case 39://right
+            direction.right = true
             break;
     }
-    // return setInterval(draw, 5); // 5000 = 5 seconds
 }
 
-window.addEventListener('keydown', pressArrowKey, true);
+function keyWasUnpressed (event) {
+    switch (event.keyCode) {
+        case 38://up
+            direction.up = false
+            break;
+        case 40://down
+            direction.down = false
+            break;
+        case 37://left
+            direction.left = false
+            break;
+        case 39://right
+            direction.right = false
+            break;
+    }
+}
+
+
+function move () {
+    // console.log(event.keyCode)
+
+    if (direction.up) {
+        yPosition -= yMovementPosition;
+    }
+    if (direction.down) {
+        yPosition += yMovementPosition;
+    }
+    if (direction.left) {
+        xPosition -= xMovementPosition;
+    }
+    if (direction.right) {
+        xPosition += xMovementPosition;
+    }
+}
+
+window.addEventListener('keydown', keyWasPressed)
+window.addEventListener('keyup', keyWasUnpressed)
 
 window.addEventListener('load', onLoadComplete);
-
-// window.requestAnimationFrame(draw);
 
 //1. Diagonal movement
 //2. Borders
