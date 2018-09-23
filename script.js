@@ -13,15 +13,11 @@ function init () {
     x: 150,
     y: 100
   }
-  const moving = {
-    up: false,
-    right: false,
-    down: false,
-    left: false
-  }
+  let moving
   let wormSections = 10
   const wormSize = 10
   const path = [initialPosition]
+  const gameSpeed = 200
 
   function draw() {
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
@@ -51,24 +47,28 @@ function init () {
     canvas.height = window.innerHeight
   }
 
-  function setDirection(direction, isActive) {
+  function setDirection(direction) {
     if (direction) {
-      moving[direction] = isActive
+      moving = direction
     }
   }
 
   function recalculatePosition() {
     const head = path[path.length - 1]
     const position = { x: head.x, y: head.y }
-    if (moving.up) {
-      position.y -= speed
-    } else if (moving.down) {
-      position.y += speed
-    }
-    if (moving.left) {
-      position.x -= speed
-    } else if (moving.right) {
-      position.x += speed
+    switch (moving) {
+      case 'up':
+        position.y -= speed
+        break
+      case 'down':
+        position.y += speed
+        break
+      case 'left':
+        position.x -= speed
+        break
+      case 'right':
+        position.x += speed
+        break
     }
     path.push(position)
   }
@@ -84,17 +84,17 @@ function init () {
   }
 
   function onKeyEvent(event) {
-    setDirection(directions[event.keyCode], event.type === 'keydown')
+    setDirection(directions[event.keyCode])
   }
 
   function animate() {
-    recalculatePosition()
     draw()
     requestAnimationFrame(animate)
   }
 
+  setInterval(recalculatePosition, gameSpeed)
+
   window.addEventListener('keydown', onKeyEvent)
-  window.addEventListener('keyup', onKeyEvent)
   window.addEventListener('load', onLoadComplete)
   window.addEventListener('resize', onResize)
 }
