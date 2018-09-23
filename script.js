@@ -66,8 +66,22 @@ function init () {
   }
 
   function generateFood() {
-    food.x = Math.floor(Math.random() * square / wormSize) * wormSize
-    food.y = Math.floor(Math.random() * square / wormSize) * wormSize
+    const pos = generateRandomCoordinate()
+    for (let i = 0; i < path.length; i++) {
+      if (path.x === pos.x && path.y === pos.y) {
+        generateFood()
+        return
+      }
+    }
+    food.x = pos.x
+    food.y = pos.y
+  }
+
+  function generateRandomCoordinate() {
+    return {
+      x: Math.floor(Math.random() * square / wormSize) * wormSize,
+      y: Math.floor(Math.random() * square / wormSize) * wormSize
+    }
   }
 
   function recalculatePosition() {
