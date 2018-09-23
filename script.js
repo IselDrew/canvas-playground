@@ -22,13 +22,9 @@ function init () {
 
   function draw() {
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
-    recalculatePosition()
-
     ctx.beginPath()
     ctx.arc(position.x, position.y, 10, 0, 2 * Math.PI)
     ctx.fill()
-
-    requestAnimationFrame(draw)
   }
 
   function createCanvas() {
@@ -68,15 +64,21 @@ function init () {
   function onLoadComplete() {
     createCanvas()
     resizeCanvas()
-    draw()
+    animate()
   }
 
-  function handleKeyEvent(event) {
+  function onKeyEvent(event) {
     setDirection(directions[event.keyCode], event.type === 'keydown')
   }
 
-  window.addEventListener('keydown', handleKeyEvent)
-  window.addEventListener('keyup', handleKeyEvent)
+  function animate() {
+    recalculatePosition()
+    draw()
+    requestAnimationFrame(animate)
+  }
+
+  window.addEventListener('keydown', onKeyEvent)
+  window.addEventListener('keyup', onKeyEvent)
   window.addEventListener('load', onLoadComplete)
   window.addEventListener('resize', onResize)
 }
