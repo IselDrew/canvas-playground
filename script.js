@@ -72,8 +72,12 @@ function init () {
     draw()
   }
 
-  window.addEventListener('keydown', (event) => setDirection(event.keyCode, true))
-  window.addEventListener('keyup', (event) => setDirection(event.keyCode, false))
+  function handleKeyEvent(event) {
+    setDirection(event.keyCode, event.type === 'keydown')
+  }
+
+  window.addEventListener('keydown', handleKeyEvent)
+  window.addEventListener('keyup', handleKeyEvent)
   window.addEventListener('load', onLoadComplete)
   window.addEventListener('resize', onResize)
 }
