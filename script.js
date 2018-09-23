@@ -22,7 +22,7 @@ function init () {
 
   function draw() {
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
-    move()
+    recalculatePosition()
 
     ctx.beginPath()
     ctx.arc(position.x, position.y, 10, 0, 2 * Math.PI)
@@ -49,17 +49,15 @@ function init () {
     }
   }
 
-  function move() {
+  function recalculatePosition() {
     if (moving.up) {
       position.y -= speed
-    }
-    if (moving.down) {
+    } else if (moving.down) {
       position.y += speed
     }
     if (moving.left) {
       position.x -= speed
-    }
-    if (moving.right) {
+    } else if (moving.right) {
       position.x += speed
     }
   }
