@@ -9,14 +9,19 @@ function init () {
     39: 'right'
   }
   const initialPosition = {
-    x: 150,
+    x: 100,
     y: 100
   }
   let moving
-  let wormSections = 10
+  let wormSections = 2
   const wormSize = 10
   const path = [initialPosition]
-  const gameSpeed = 200
+  const gameSpeed = 500
+  const food = {
+    x: undefined,
+    y: undefined
+  }
+  const square = 100
 
   function draw() {
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
@@ -40,7 +45,7 @@ function init () {
 
   function drawFood() {
     ctx.fillStyle = '#c22250'
-    ctx.fillRect(100, 200, wormSize, wormSize)
+    ctx.fillRect(food.x, food.y, wormSize, wormSize)
   }
 
   function createCanvas() {
@@ -60,27 +65,36 @@ function init () {
     }
   }
 
+  function generateFood() {
+    food.x = Math.floor(Math.random() * square / wormSize) * wormSize
+    food.y = Math.floor(Math.random() * square / wormSize) * wormSize
+  }
+
   function recalculatePosition() {
     const head = path[path.length - 1]
-    const position = { x: head.x, y: head.y }
+    const pos = { x: head.x, y: head.y }
     switch (moving) {
       case 'up':
-        position.y -= wormSize
+        pos.y -= wormSize
         break
       case 'down':
-        position.y += wormSize
+        pos.y += wormSize
         break
       case 'left':
-        position.x -= wormSize
+        pos.x -= wormSize
         break
       case 'right':
-        position.x += wormSize
+        pos.x += wormSize
         break
+    }
+    if (pos.x === food.x && pos.y === food.y) {
+      wormSections++
+      generateFood()
     }
     if (path.length === wormSections) {
       path.shift()
     }
-    path.push(position)
+    path.push(pos)
   }
 
   function onResize() {
@@ -96,8 +110,16 @@ function init () {
   function onKeyEvent(event) {
     if (!moving) {
       setInterval(recalculatePosition, gameSpeed)
+      generateFood()
     }
-    setDirection(directions[event.keyCode])
+    const dir = directions[event.keyCode]
+    if (moving === 'left' && dir === 'right' ||
+      moving === 'right' && dir === 'left' ||
+      moving === 'up' && dir === 'down' ||
+      moving === 'down' && dir === 'up') {
+      return
+    }
+    setDirection(dir)
   }
 
   function animate() {
