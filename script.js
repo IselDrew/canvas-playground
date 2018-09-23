@@ -42,10 +42,9 @@ function init () {
     canvas.height = window.innerHeight
   }
 
-  function setDirection(keyCode, value) {
-    const direction = directions[keyCode]
+  function setDirection(direction, isActive) {
     if (direction) {
-      moving[direction] = value
+      moving[direction] = isActive
     }
   }
 
@@ -73,7 +72,7 @@ function init () {
   }
 
   function handleKeyEvent(event) {
-    setDirection(event.keyCode, event.type === 'keydown')
+    setDirection(directions[event.keyCode], event.type === 'keydown')
   }
 
   window.addEventListener('keydown', handleKeyEvent)
