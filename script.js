@@ -1,15 +1,21 @@
 let canvas
 let ctx
 
-let xMovementPosition = 5
-let yMovementPosition = 5
+const speed = 10
+
+const directions = {
+  38: 'up',
+  40: 'down',
+  37: 'left',
+  39: 'right'
+}
 
 const position = {
   x: 150,
   y: 100
 }
 
-const direction = {
+const moving = {
   up: false,
   right: false,
   down: false,
@@ -43,59 +49,31 @@ function onLoadComplete() {
 
 
 function keyWasPressed(event) {
-  switch (event.keyCode) {
-    //up
-    case 38:
-      direction.up = true
-      break
-    //down
-    case 40:
-      direction.down = true
-      break
-    //left
-    case 37:
-      direction.left = true
-      break
-    //right
-    case 39:
-      direction.right = true
-      break
+  const direction = directions[event.keyCode]
+  if (direction) {
+    moving[direction] = true
   }
 }
 
 function keyWasUnpressed(event) {
-  switch (event.keyCode) {
-    //up
-    case 38:
-      direction.up = false
-      break
-    //down
-    case 40:
-      direction.down = false
-      break
-    //left
-    case 37:
-      direction.left = false
-      break
-    //right
-    case 39:
-      direction.right = false
-      break
+  const direction = directions[event.keyCode]
+  if (direction) {
+    moving[direction] = false
   }
 }
 
 function move() {
-  if (direction.up) {
-    position.y -= yMovementPosition
+  if (moving.up) {
+    position.y -= speed
   }
-  if (direction.down) {
-    position.y += yMovementPosition
+  if (moving.down) {
+    position.y += speed
   }
-  if (direction.left) {
-    position.x -= xMovementPosition
+  if (moving.left) {
+    position.x -= speed
   }
-  if (direction.right) {
-    position.x += xMovementPosition
+  if (moving.right) {
+    position.x += speed
   }
 }
 
