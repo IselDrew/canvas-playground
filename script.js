@@ -9,7 +9,7 @@ function init () {
     37: 'left',
     39: 'right'
   }
-  const position = {
+  const initialPosition = {
     x: 150,
     y: 100
   }
@@ -19,11 +19,14 @@ function init () {
     down: false,
     left: false
   }
+  let wormSections = 1
+  const path = [initialPosition]
 
   function draw() {
+    const head = path[path.length - 1]
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
     ctx.beginPath()
-    ctx.arc(position.x, position.y, 10, 0, 2 * Math.PI)
+    ctx.arc(head.x, head.y, 10, 0, 2 * Math.PI)
     ctx.fill()
   }
 
@@ -45,6 +48,8 @@ function init () {
   }
 
   function recalculatePosition() {
+    const head = path[path.length - 1]
+    const position = { x: head.x, y: head.y }
     if (moving.up) {
       position.y -= speed
     } else if (moving.down) {
@@ -55,6 +60,7 @@ function init () {
     } else if (moving.right) {
       position.x += speed
     }
+    path.push(position)
   }
 
   function onResize() {
