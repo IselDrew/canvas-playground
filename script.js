@@ -3,19 +3,16 @@ function init () {
   let ctx
 
   const speed = 10
-
   const directions = {
     38: 'up',
     40: 'down',
     37: 'left',
     39: 'right'
   }
-
   const position = {
     x: 150,
     y: 100
   }
-
   const moving = {
     up: false,
     right: false,
@@ -45,12 +42,6 @@ function init () {
     canvas.height = window.innerHeight
   }
 
-  function onLoadComplete() {
-    createCanvas()
-    resizeCanvas()
-    draw()
-  }
-
   function setDirection(keyCode, value) {
     const direction = directions[keyCode]
     if (direction) {
@@ -75,6 +66,12 @@ function init () {
 
   function onResize() {
     resizeCanvas()
+  }
+
+  function onLoadComplete() {
+    createCanvas()
+    resizeCanvas()
+    draw()
   }
 
   window.addEventListener('keydown', (event) => setDirection(event.keyCode, true))
