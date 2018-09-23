@@ -2,7 +2,6 @@ function init () {
   let canvas
   let ctx
 
-  const speed = 10
   const directions = {
     38: 'up',
     40: 'down',
@@ -22,6 +21,7 @@ function init () {
   function draw() {
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
     drawWorm()
+    drawFood()
   }
 
   function drawWorm() {
@@ -32,9 +32,15 @@ function init () {
       }
       const pos = path[index]
       ctx.beginPath()
+      ctx.fillStyle = '#4d4d4d'
       ctx.fillRect(pos.x, pos.y, wormSize, wormSize)
       ctx.fill()
     }
+  }
+
+  function drawFood() {
+    ctx.fillStyle = '#c22250'
+    ctx.fillRect(100, 200, wormSize, wormSize)
   }
 
   function createCanvas() {
@@ -59,16 +65,16 @@ function init () {
     const position = { x: head.x, y: head.y }
     switch (moving) {
       case 'up':
-        position.y -= speed
+        position.y -= wormSize
         break
       case 'down':
-        position.y += speed
+        position.y += wormSize
         break
       case 'left':
-        position.x -= speed
+        position.x -= wormSize
         break
       case 'right':
-        position.x += speed
+        position.x += wormSize
         break
     }
     if (path.length === wormSections) {
