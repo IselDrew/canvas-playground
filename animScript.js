@@ -5,6 +5,7 @@ let xMovementPosition = 5;
 let yMovementPosition = 5;
 let xPosition = 150;
 let yPosition = 100;
+let radius = 10;
 
 const direction = {
     up: false,
@@ -19,12 +20,30 @@ function draw() {
     move();
 
     ctx.beginPath();
-    ctx.arc(xPosition, yPosition, 10, 0, 2 * Math.PI);
+    ctx.arc(xPosition, yPosition, radius, 0, 2 * Math.PI);
     ctx.fill();
+
+    collisions();
 
     requestAnimationFrame(draw)
 }
 
+function collisions(){
+    // console.log(window.innerWidth)
+    // console.log(xPosition)
+    if(xPosition < 0){
+        xPosition = radius;
+    }
+    if(yPosition <= 0){
+        yPosition = radius;
+    }    
+    if(xPosition >= window.innerWidth){
+        xPosition = window.innerWidth - radius;
+    }
+    if(yPosition >= window.innerHeight){
+        yPosition = window.innerHeight - radius;
+    }
+}
 
 function resizeCanvas() {
     canvas.width = window.innerWidth;
