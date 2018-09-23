@@ -26,10 +26,11 @@ function init () {
 
   function drawWorm() {
     for (let i = 0; i < wormSections; i++) {
-      if (path.length < wormSections) {
+      const index = path.length - 1 - i
+      if (index < 0) {
         return
       }
-      const pos = path[path.length - 1 - i]
+      const pos = path[index]
       ctx.beginPath()
       ctx.fillRect(pos.x, pos.y, wormSize, wormSize)
       ctx.fill()
@@ -70,6 +71,9 @@ function init () {
         position.x += speed
         break
     }
+    if (path.length === wormSections) {
+      path.shift()
+    }
     path.push(position)
   }
 
@@ -84,6 +88,9 @@ function init () {
   }
 
   function onKeyEvent(event) {
+    if (!moving) {
+      setInterval(recalculatePosition, gameSpeed)
+    }
     setDirection(directions[event.keyCode])
   }
 
@@ -91,8 +98,6 @@ function init () {
     draw()
     requestAnimationFrame(animate)
   }
-
-  setInterval(recalculatePosition, gameSpeed)
 
   window.addEventListener('keydown', onKeyEvent)
   window.addEventListener('load', onLoadComplete)
