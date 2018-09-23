@@ -19,15 +19,25 @@ function init () {
     down: false,
     left: false
   }
-  let wormSections = 1
+  let wormSections = 10
+  const wormSize = 10
   const path = [initialPosition]
 
   function draw() {
-    const head = path[path.length - 1]
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
-    ctx.beginPath()
-    ctx.arc(head.x, head.y, 10, 0, 2 * Math.PI)
-    ctx.fill()
+    drawWorm()
+  }
+
+  function drawWorm() {
+    for (let i = 0; i < wormSections; i++) {
+      if (path.length < wormSections) {
+        return
+      }
+      const pos = path[path.length - 1 - i]
+      ctx.beginPath()
+      ctx.fillRect(pos.x, pos.y, wormSize, wormSize)
+      ctx.fill()
+    }
   }
 
   function createCanvas() {
