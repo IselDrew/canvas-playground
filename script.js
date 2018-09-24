@@ -11,7 +11,7 @@ function init () {
   const wormSize = 10
   const gameSpeed = 200
   const food = {}
-  const square = 100
+  const square = 20 * wormSize
   let moving
   let wormSections
   let gameLoop
@@ -138,7 +138,7 @@ function init () {
   }
 
   function endGame() {
-    console.warn(`GAME OVER. YOUR SCORE: ${path.length - 2}`)
+    alert(`GAME OVER. YOUR SCORE: ${path.length - 2}`)
     isPlaying = false
     clearInterval(gameLoop)
   }
