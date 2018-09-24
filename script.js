@@ -1,13 +1,17 @@
 function Canvas(px) {
   this.px = px
-  this.canvas = document.createElement('canvas')
-  document.body.appendChild(this.canvas)
-  this.ctx = this.canvas.getContext("2d")
+  this.createCanvas()
   this.onResize()
   window.addEventListener('resize', this.onResize.bind(this))
 }
 
 Canvas.prototype = {
+  createCanvas: function() {
+    this.canvas = document.createElement('canvas')
+    document.body.appendChild(this.canvas)
+    this.ctx = this.canvas.getContext("2d")
+  },
+
   draw: function(mapSize, food, snakeLength, path) {
     this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
     this.drawMap(mapSize)
