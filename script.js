@@ -42,7 +42,13 @@ function Snake(pixelSize, mapSize, gameSpeed) {
     40: 'down',
     37: 'left',
     39: 'right'
-  }
+  },
+  offsets = {
+    up: [0, -1],
+    down: [0, 1],
+    left: [-1, 0],
+    right: [1, 0]
+  },
   this.mapSize = mapSize
   this.gameSpeed = gameSpeed
   this.food = {}
@@ -86,22 +92,8 @@ Snake.prototype = {
 
   getNewPosition: function(dir) {
     const head = this.path[this.path.length - 1]
-    const pos = { x: head.x, y: head.y }
-    switch (dir) {
-      case 'up':
-        pos.y -= 1
-        break
-      case 'down':
-        pos.y += 1
-        break
-      case 'left':
-        pos.x -= 1
-        break
-      case 'right':
-        pos.x += 1
-        break
-    }
-    return pos
+    const o = this.offsets[dir]
+    return { x: head.x + o[0], y: head.y + o[1] }
   },
 
   checkCollisionWithWall: function(x, y) {
