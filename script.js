@@ -11,11 +11,11 @@ function init () {
   let moving
   let wormSections = 2
   const wormSize = 10
-  const gameSpeed = 200
+  const gameSpeed = 500
   const food = {}
   const square = 100
   let gameLoop
-  const path = [generateRandomPosition()]
+  let path = [generateRandomPosition()]
 
   function draw() {
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
@@ -82,10 +82,10 @@ function init () {
     return Math.floor(Math.random() * square / wormSize) * wormSize
   }
 
-  function recalculatePosition() {
+  function getNewPosition(dir) {
     const head = path[path.length - 1]
     const pos = { x: head.x, y: head.y }
-    switch (moving) {
+    switch (dir) {
       case 'up':
         pos.y -= wormSize
         break
@@ -99,6 +99,11 @@ function init () {
         pos.x += wormSize
         break
     }
+    return pos
+  }
+
+  function move() {
+    const pos = getNewPosition(moving)
     for (let i = 0; i < path.length; i++) {
       if (path[i].x === pos.x && path[i].y === pos.y) {
         resetGame()
@@ -149,6 +154,11 @@ function init () {
       moving === 'down' && dir === 'up') {
       return
     }
+    const pos = path[path.length - 2]
+    const newPos = getNewPosition(dir)
+    if (pos && pos.x === newPos.x && pos.y === newPos.y) {
+      return
+    }
     setDirection(dir)
   }
 
@@ -158,7 +168,7 @@ function init () {
   }
 
   function startGame() {
-    gameLoop = setInterval(recalculatePosition, gameSpeed)
+    gameLoop = setInterval(move, gameSpeed)
     generateFood()
   }
 
