@@ -3,9 +3,8 @@ function Canvas(px) {
   this.canvas = document.createElement('canvas')
   document.body.appendChild(this.canvas)
   this.ctx = this.canvas.getContext("2d")
-  const resize = this.resizeCanvas.bind(this)
-  window.addEventListener('resize', resize)
   this.resizeCanvas()
+  window.addEventListener('resize', this.resizeCanvas.bind(this))
 }
 
 Canvas.prototype = {
@@ -27,16 +26,17 @@ Canvas.prototype = {
         return
       }
       const pos = path[index]
-      this.ctx.beginPath()
-      this.ctx.fillStyle = '#4d4d4d'
-      this.ctx.fillRect(pos.x * this.px, pos.y * this.px, this.px, this.px)
-      this.ctx.fill()
+      this.drawPoint(pos.x, pos.y, '#4d4d4d')
     }
   },
 
-  drawFood: function(food, pixelSize) {
-    this.ctx.fillStyle = '#c22250'
-    this.ctx.fillRect(food.x * this.px, food.y * this.px, this.px, this.px)
+  drawFood: function(food) {
+    this.drawPoint(food.x, food.y, '#c22250')
+  },
+
+  drawPoint: function(x, y, color) {
+    this.ctx.fillStyle = color
+    this.ctx.fillRect(x * this.px, y * this.px, this.px, this.px)
   },
 
   resizeCanvas: function() {
@@ -194,8 +194,8 @@ Snake.prototype = {
 
   animate: function() {
     this.canvas.draw(this.mapSize, this.food, this.snakeLength, this.path)
-    const animate = this.animate.bind(this)
-    requestAnimationFrame(animate)
+    // TODO:
+    requestAnimationFrame(this.animate.bind(this))
   }
 }
 
