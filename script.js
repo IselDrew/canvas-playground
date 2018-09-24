@@ -1,4 +1,5 @@
-function Canvas() {
+function Canvas(px) {
+  this.px = px
   this.canvas = document.createElement('canvas')
   document.body.appendChild(this.canvas)
   this.ctx = this.canvas.getContext("2d")
@@ -8,18 +9,18 @@ function Canvas() {
 }
 
 Canvas.prototype = {
-  draw: function(mapSize, food, snakeLength, path, pixelSize) {
+  draw: function(mapSize, food, snakeLength, path) {
     this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
     this.drawMap(mapSize)
-    this.drawSnake(snakeLength, path, pixelSize)
-    this.drawFood(food, pixelSize)
+    this.drawSnake(snakeLength, path)
+    this.drawFood(food)
   },
 
   drawMap: function(mapSize) {
-    this.ctx.strokeRect(0.5, 0.5, mapSize, mapSize)
+    this.ctx.strokeRect(0.5, 0.5, mapSize * this.px, mapSize * this.px)
   },
 
-  drawSnake: function(snakeLength, path, pixelSize) {
+  drawSnake: function(snakeLength, path) {
     for (let i = 0; i < snakeLength; i++) {
       const index = path.length - 1 - i
       if (index < 0) {
@@ -28,14 +29,14 @@ Canvas.prototype = {
       const pos = path[index]
       this.ctx.beginPath()
       this.ctx.fillStyle = '#4d4d4d'
-      this.ctx.fillRect(pos.x, pos.y, pixelSize, pixelSize)
+      this.ctx.fillRect(pos.x * this.px, pos.y * this.px, this.px, this.px)
       this.ctx.fill()
     }
   },
 
   drawFood: function(food, pixelSize) {
     this.ctx.fillStyle = '#c22250'
-    this.ctx.fillRect(food.x, food.y, pixelSize, pixelSize)
+    this.ctx.fillRect(food.x * this.px, food.y * this.px, this.px, this.px)
   },
 
   resizeCanvas: function() {
@@ -46,7 +47,7 @@ Canvas.prototype = {
 
 
 function Snake(pixelSize, mapSize, gameSpeed) {
-  this.canvas = new Canvas()
+  this.canvas = new Canvas(32)
   this.directions = {
     38: 'up',
     40: 'down',
@@ -54,7 +55,7 @@ function Snake(pixelSize, mapSize, gameSpeed) {
     39: 'right'
   }
   this.pixelSize = pixelSize
-  this.mapSize = mapSize * pixelSize
+  this.mapSize = mapSize
   this.gameSpeed = gameSpeed
   this.food = {}
   this.isPlaying = false
@@ -92,7 +93,7 @@ Snake.prototype = {
   },
 
   generateRandomCoordinate: function() {
-    return Math.floor(Math.random() * this.mapSize / this.pixelSize) * this.pixelSize
+    return Math.floor(Math.random() * this.mapSize)
   },
 
   getNewPosition: function(dir) {
@@ -100,16 +101,16 @@ Snake.prototype = {
     const pos = { x: head.x, y: head.y }
     switch (dir) {
       case 'up':
-        pos.y -= this.pixelSize
+        pos.y -= 1
         break
       case 'down':
-        pos.y += this.pixelSize
+        pos.y += 1
         break
       case 'left':
-        pos.x -= this.pixelSize
+        pos.x -= 1
         break
       case 'right':
-        pos.x += this.pixelSize
+        pos.x += 1
         break
     }
     return pos
@@ -192,7 +193,7 @@ Snake.prototype = {
   },
 
   animate: function() {
-    this.canvas.draw(this.mapSize, this.food, this.snakeLength, this.path, this.pixelSize)
+    this.canvas.draw(this.mapSize, this.food, this.snakeLength, this.path)
     const animate = this.animate.bind(this)
     requestAnimationFrame(animate)
   }
