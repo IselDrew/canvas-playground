@@ -110,6 +110,10 @@ function init () {
 
   function move() {
     const pos = getNewPosition(moving)
+    if (pos.x < 0 || pos.x >= square || pos.y < 0 || pos.y >= square) {
+      endGame()
+      return
+    }
     for (let i = 0; i < path.length; i++) {
       if (path[i].x === pos.x && path[i].y === pos.y) {
         endGame()
@@ -159,14 +163,17 @@ function init () {
   }
 
   function onKeyEvent(event) {
+    const dir = directions[event.keyCode]
+    if (!dir) {
+      return
+    }
     if (!moving) {
       startGame()
     }
     if (!isPlaying) {
       resetGame()
-      startGame()
+      return
     }
-    const dir = directions[event.keyCode]
     if (moving === 'left' && dir === 'right' ||
       moving === 'right' && dir === 'left' ||
       moving === 'up' && dir === 'down' ||
