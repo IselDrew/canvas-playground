@@ -104,18 +104,26 @@ Snake.prototype = {
     return pos
   },
 
+  checkCollisionWithWall: function(x, y) {
+    return x < 0 || x >= this.mapSize || y < 0 || y >= this.mapSize
+  },
+
+  checkCollisionWithSelf: function(x, y) {
+    for (let i = 0; i < this.path.length; i++) {
+      const p = this.path[i]
+      if (p.x === x && p.y === y) {
+        return true
+      }
+    }
+    return false
+  },
+
   move: function() {
     const pos = this.getNewPosition(this.moving)
-    if (pos.x < 0 || pos.x >= this.mapSize || pos.y < 0 || pos.y >= this.mapSize) {
+    if (this.checkCollisionWithWall(pos.x, pos.y) ||
+        this.checkCollisionWithSelf(pos.x, pos.y)) {
       this.endGame()
       return
-    }
-    for (let i = 0; i < this.path.length; i++) {
-      const item = this.path[i]
-      if (item.x === pos.x && item.y === pos.y) {
-        this.endGame()
-        return
-      }
     }
     const canEat = pos.x === this.food.x && pos.y === this.food.y
     if (canEat) {
