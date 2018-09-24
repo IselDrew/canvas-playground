@@ -3,8 +3,8 @@ function Canvas(px) {
   this.canvas = document.createElement('canvas')
   document.body.appendChild(this.canvas)
   this.ctx = this.canvas.getContext("2d")
-  this.resizeCanvas()
-  window.addEventListener('resize', this.resizeCanvas.bind(this))
+  this.onResize()
+  window.addEventListener('resize', this.onResize.bind(this))
 }
 
 Canvas.prototype = {
@@ -40,8 +40,14 @@ Canvas.prototype = {
   },
 
   resizeCanvas: function() {
-    this.canvas.width = window.innerWidth
-    this.canvas.height = window.innerHeight
+    this.canvas.width = this.ww
+    this.canvas.height = this.wh
+  },
+
+  onResize: function() {
+    this.ww = window.innerWidth
+    this.wh = window.innerHeight
+    this.resizeCanvas()
   }
 }
 
