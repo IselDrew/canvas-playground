@@ -45,157 +45,167 @@ Canvas.prototype = {
 }
 
 
-function init () {
-  const canvas = new Canvas()
-
-  const directions = {
+function Snake(pixelSize, mapSize, gameSpeed) {
+  this.canvas = new Canvas()
+  this.directions = {
     38: 'up',
     40: 'down',
     37: 'left',
     39: 'right'
   }
-  const pixelSize = 32
-  const mapSize = 16 * pixelSize
-  const gameSpeed = 200
-  let food = {}
-  let moving
-  let snakeLength
-  let gameLoop
-  let path
-  let isPlaying = false
+  this.pixelSize = pixelSize
+  this.mapSize = mapSize * pixelSize
+  this.gameSpeed = gameSpeed
+  this.food = {}
+  this.isPlaying = false
+  this.moving
+  this.snakeLength
+  this.gameLoop
+  this.path
+}
 
-  function setDirection(direction) {
+Snake.prototype = {
+  setDirection: function(direction) {
     if (direction) {
-      moving = direction
+      this.moving = direction
     }
-  }
+  },
 
-  function generateFood() {
-    const pos = generateRandomPosition()
-    for (let i = 0; i < path.length; i++) {
-      if (path[i].x === pos.x && path[i].y === pos.y) {
-        generateFood()
+  generateFood: function() {
+    const pos = this.generateRandomPosition()
+    for (let i = 0; i < this.path.length; i++) {
+      const snake = this.path[i]
+      if (snake.x === pos.x && snake.y === pos.y) {
+        this.generateFood()
         return
       }
     }
-    food.x = pos.x
-    food.y = pos.y
-  }
+    this.food.x = pos.x
+    this.food.y = pos.y
+  },
 
-  function generateRandomPosition() {
+  generateRandomPosition: function() {
     return {
-      x: generateRandomCoordinate(),
-      y: generateRandomCoordinate()
+      x: this.generateRandomCoordinate(),
+      y: this.generateRandomCoordinate()
     }
-  }
+  },
 
-  function generateRandomCoordinate() {
-    return Math.floor(Math.random() * mapSize / pixelSize) * pixelSize
-  }
+  generateRandomCoordinate: function() {
+    return Math.floor(Math.random() * this.mapSize / this.pixelSize) * this.pixelSize
+  },
 
-  function getNewPosition(dir) {
-    const head = path[path.length - 1]
+  getNewPosition: function(dir) {
+    const head = this.path[this.path.length - 1]
     const pos = { x: head.x, y: head.y }
     switch (dir) {
       case 'up':
-        pos.y -= pixelSize
+        pos.y -= this.pixelSize
         break
       case 'down':
-        pos.y += pixelSize
+        pos.y += this.pixelSize
         break
       case 'left':
-        pos.x -= pixelSize
+        pos.x -= this.pixelSize
         break
       case 'right':
-        pos.x += pixelSize
+        pos.x += this.pixelSize
         break
     }
     return pos
-  }
+  },
 
-  function move() {
-    const pos = getNewPosition(moving)
-    if (pos.x < 0 || pos.x >= mapSize || pos.y < 0 || pos.y >= mapSize) {
-      endGame()
+  move: function() {
+    const pos = this.getNewPosition(this.moving)
+    if (pos.x < 0 || pos.x >= this.mapSize || pos.y < 0 || pos.y >= this.mapSize) {
+      this.endGame()
       return
     }
-    for (let i = 0; i < path.length; i++) {
-      if (path[i].x === pos.x && path[i].y === pos.y) {
-        endGame()
+    for (let i = 0; i < this.path.length; i++) {
+      const item = this.path[i]
+      if (item.x === pos.x && item.y === pos.y) {
+        this.endGame()
         return
       }
     }
-    const canEat = pos.x === food.x && pos.y === food.y
+    const canEat = pos.x === this.food.x && pos.y === this.food.y
     if (canEat) {
-      feedSnake()
+      this.feedSnake()
     }
-    if (path.length === snakeLength) {
-      path.shift()
+    if (this.path.length === this.snakeLength) {
+      this.path.shift()
     }
-    path.push(pos)
+    this.path.push(pos)
     if (canEat) {
-      generateFood()
+      this.generateFood()
     }
-  }
+  },
 
-  function feedSnake() {
-    snakeLength++
-  }
+  feedSnake: function() {
+    this.snakeLength++
+  },
 
-  function endGame() {
-    alert(`GAME OVER. YOUR SCORE: ${path.length - 2}`)
-    isPlaying = false
-    clearInterval(gameLoop)
-  }
+  endGame: function() {
+    alert(`GAME OVER. YOUR SCORE: ${this.path.length - 2}`)
+    this.isPlaying = false
+    clearInterval(this.gameLoop)
+  },
 
-  function resetGame() {
-    snakeLength = 2
-    moving = null
-    delete food.x
-    delete food.y
-    path = [generateRandomPosition()]
-  }
+  resetGame: function() {
+    this.snakeLength = 2
+    this.moving = null
+    this.food = {}
+    this.path = [this.generateRandomPosition()]
+  },
 
-  function onLoadComplete() {
-    animate()
-    resetGame()
-  }
+  startGame: function() {
+    this.isPlaying = true
+    const move = this.move.bind(this)
+    this.gameLoop = setInterval(move, this.gameSpeed)
+    this.generateFood()
+  },
 
-  function onKeyEvent(event) {
-    const dir = directions[event.keyCode]
+  onKeyEvent: function(event) {
+    const dir = this.directions[event.keyCode]
     if (!dir) {
       return
     }
-    if (!moving) {
-      startGame()
+    if (!this.moving) {
+      this.startGame()
     }
-    if (!isPlaying) {
-      resetGame()
+    if (!this.isPlaying) {
+      this.resetGame()
       return
     }
-    if (moving === 'left' && dir === 'right' ||
-      moving === 'right' && dir === 'left' ||
-      moving === 'up' && dir === 'down' ||
-      moving === 'down' && dir === 'up') {
+    if (this.moving === 'left' && dir === 'right' ||
+      this.moving === 'right' && dir === 'left' ||
+      this.moving === 'up' && dir === 'down' ||
+      this.moving === 'down' && dir === 'up') {
       return
     }
-    const pos = path[path.length - 2]
-    const newPos = getNewPosition(dir)
+    const pos = this.path[this.path.length - 2]
+    const newPos = this.getNewPosition(dir)
     if (pos && pos.x === newPos.x && pos.y === newPos.y) {
       return
     }
-    setDirection(dir)
-  }
+    this.setDirection(dir)
+  },
 
-  function animate() {
-    canvas.draw(mapSize, food, snakeLength, path, pixelSize)
+  animate: function() {
+    this.canvas.draw(this.mapSize, this.food, this.snakeLength, this.path, this.pixelSize)
+    const animate = this.animate.bind(this)
     requestAnimationFrame(animate)
   }
+}
 
-  function startGame() {
-    isPlaying = true
-    gameLoop = setInterval(move, gameSpeed)
-    generateFood()
+
+function init () {
+  const snake = new Snake(32, 16, 200)
+  const onKeyEvent = snake.onKeyEvent.bind(snake)
+
+  function onLoadComplete() {
+    snake.animate()
+    snake.resetGame()
   }
 
   window.addEventListener('keydown', onKeyEvent)
