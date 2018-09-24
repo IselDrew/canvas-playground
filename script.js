@@ -36,7 +36,7 @@ Canvas.prototype = {
 
 
 function Snake(pixelSize, mapSize, gameSpeed) {
-  this.canvas = new Canvas(pixelSize, mapSize)
+  this.canvas = new Canvas(pixelSize)
   this.directions = {
     38: 'up',
     40: 'down',
@@ -70,7 +70,7 @@ Snake.prototype = {
     const pos = this.generateRandomPosition()
     for (let i = 0; i < this.path.length; i++) {
       const snake = this.path[i]
-      if (snake.x === pos.x && snake.y === pos.y) {
+      if (collide(snake.x, snake.y, pos.x, pos.y)) {
         this.generateFood()
         return
       }
@@ -103,11 +103,15 @@ Snake.prototype = {
   checkCollisionWithSelf: function(x, y) {
     for (let i = 0; i < this.path.length; i++) {
       const p = this.path[i]
-      if (p.x === x && p.y === y) {
+      if (collide(p.x, p.y, x, y)) {
         return true
       }
     }
     return false
+  },
+
+  collide: function(x1, y1, x2, y2) {
+    return x1 === x2 && y1 === y2
   },
 
   move: function() {
@@ -117,7 +121,7 @@ Snake.prototype = {
       this.endGame()
       return
     }
-    const canEat = pos.x === this.food.x && pos.y === this.food.y
+    const canEat = collide(pos.x, pos.y, this.food.x, this.food.y)
     if (canEat) {
       this.feedSnake()
     }
@@ -189,14 +193,14 @@ Snake.prototype = {
     }
     const pos = this.path[this.path.length - 2]
     const newPos = this.getNewPosition(dir)
-    if (pos && pos.x === newPos.x && pos.y === newPos.y) {
+    if (pos && this.collide(pos.x, pos.y, newPos.x, newPos.y)) {
       return
     }
     this.setDirection(dir)
   },
 
   animate: function() {
-    this.canvas.drawMap(16, 16)
+    this.canvas.drawMap(this.mapSize, this.mapSize)
     this.drawSnake()
     this.drawFood()
     // TODO:
