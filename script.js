@@ -8,18 +8,14 @@ function init () {
     37: 'left',
     39: 'right'
   }
-  const initialPosition = {
-    x: 100,
-    y: 100
-  }
   let moving
   let wormSections = 2
   const wormSize = 10
-  const path = [initialPosition]
   const gameSpeed = 200
   const food = {}
   const square = 100
   let gameLoop
+  const path = [generateRandomPosition()]
 
   function draw() {
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
@@ -64,7 +60,7 @@ function init () {
   }
 
   function generateFood() {
-    const pos = generateRandomCoordinate()
+    const pos = generateRandomPosition()
     for (let i = 0; i < path.length; i++) {
       if (path[i].x === pos.x && path[i].y === pos.y) {
         generateFood()
@@ -75,7 +71,7 @@ function init () {
     food.y = pos.y
   }
 
-  function generateRandomCoordinate() {
+  function generateRandomPosition() {
     return {
       x: Math.floor(Math.random() * square / wormSize) * wormSize,
       y: Math.floor(Math.random() * square / wormSize) * wormSize
@@ -102,6 +98,7 @@ function init () {
     for (let i = 0; i < path.length; i++) {
       if (path[i].x === pos.x && path[i].y === pos.y) {
         resetGame()
+        return
       }
     }
     if (pos.x === food.x && pos.y === food.y) {
@@ -115,11 +112,12 @@ function init () {
   }
 
   function resetGame() {
-    clearInterval(gameLoop)
     console.warn('GAME OVER')
+    clearInterval(gameLoop)
     wormSections = 2
     delete food.x
     delete food.y
+    path = [generateRandomPosition()]
   }
 
   function onResize() {
