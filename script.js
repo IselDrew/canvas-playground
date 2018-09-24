@@ -73,9 +73,13 @@ function init () {
 
   function generateRandomPosition() {
     return {
-      x: Math.floor(Math.random() * square / wormSize) * wormSize,
-      y: Math.floor(Math.random() * square / wormSize) * wormSize
+      x: generateRandomCoordinate(),
+      y: generateRandomCoordinate()
     }
+  }
+
+  function generateRandomCoordinate() {
+    return Math.floor(Math.random() * square / wormSize) * wormSize
   }
 
   function recalculatePosition() {
@@ -102,13 +106,17 @@ function init () {
       }
     }
     if (pos.x === food.x && pos.y === food.y) {
-      wormSections++
-      generateFood()
+      growWorm()
     }
     if (path.length === wormSections) {
       path.shift()
     }
     path.push(pos)
+  }
+
+  function growWorm() {
+    wormSections++
+    generateFood()
   }
 
   function resetGame() {
@@ -132,8 +140,7 @@ function init () {
 
   function onKeyEvent(event) {
     if (!moving) {
-      gameLoop = setInterval(recalculatePosition, gameSpeed)
-      generateFood()
+      startGame()
     }
     const dir = directions[event.keyCode]
     if (moving === 'left' && dir === 'right' ||
@@ -148,6 +155,11 @@ function init () {
   function animate() {
     draw()
     requestAnimationFrame(animate)
+  }
+
+  function startGame() {
+    gameLoop = setInterval(recalculatePosition, gameSpeed)
+    generateFood()
   }
 
   window.addEventListener('keydown', onKeyEvent)
