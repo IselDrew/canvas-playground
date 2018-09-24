@@ -12,30 +12,9 @@ Canvas.prototype = {
     this.ctx = this.canvas.getContext("2d")
   },
 
-  draw: function(mapSize, food, snakeLength, path) {
+  drawMap: function(x, y) {
     this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
-    this.drawMap(mapSize)
-    this.drawSnake(snakeLength, path)
-    this.drawFood(food)
-  },
-
-  drawMap: function(mapSize) {
-    this.ctx.strokeRect(0.5, 0.5, mapSize * this.px, mapSize * this.px)
-  },
-
-  drawSnake: function(snakeLength, path) {
-    for (let i = 0; i < snakeLength; i++) {
-      const index = path.length - 1 - i
-      if (index < 0) {
-        return
-      }
-      const pos = path[index]
-      this.drawPoint(pos.x, pos.y, '#4d4d4d')
-    }
-  },
-
-  drawFood: function(food) {
-    this.drawPoint(food.x, food.y, '#c22250')
+    this.ctx.strokeRect(0.5, 0.5, x * this.px, y * this.px)
   },
 
   drawPoint: function(x, y, color) {
@@ -57,14 +36,13 @@ Canvas.prototype = {
 
 
 function Snake(pixelSize, mapSize, gameSpeed) {
-  this.canvas = new Canvas(32)
+  this.canvas = new Canvas(pixelSize, mapSize)
   this.directions = {
     38: 'up',
     40: 'down',
     37: 'left',
     39: 'right'
   }
-  this.pixelSize = pixelSize
   this.mapSize = mapSize
   this.gameSpeed = gameSpeed
   this.food = {}
@@ -152,6 +130,21 @@ Snake.prototype = {
     }
   },
 
+  drawSnake: function() {
+    for (let i = 0; i < this.snakeLength; i++) {
+      const index = this.path.length - 1 - i
+      if (index < 0) {
+        return
+      }
+      const pos = this.path[index]
+      this.canvas.drawPoint(pos.x, pos.y, '#4d4d4d')
+    }
+  },
+
+  drawFood: function() {
+    this.canvas.drawPoint(this.food.x, this.food.y, '#c22250')
+  },
+
   feedSnake: function() {
     this.snakeLength++
   },
@@ -203,7 +196,9 @@ Snake.prototype = {
   },
 
   animate: function() {
-    this.canvas.draw(this.mapSize, this.food, this.snakeLength, this.path)
+    this.canvas.drawMap(16, 16)
+    this.drawSnake()
+    this.drawFood()
     // TODO:
     requestAnimationFrame(this.animate.bind(this))
   }
