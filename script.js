@@ -1,6 +1,52 @@
+function Canvas() {
+  this.canvas = document.createElement('canvas')
+  document.body.appendChild(this.canvas)
+  this.ctx = this.canvas.getContext("2d")
+  const resize = this.resizeCanvas.bind(this)
+  window.addEventListener('resize', resize)
+  this.resizeCanvas()
+}
+
+Canvas.prototype = {
+  draw: function(mapSize, food, snakeLength, path, pixelSize) {
+    this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
+    this.drawMap(mapSize)
+    this.drawSnake(snakeLength, path, pixelSize)
+    this.drawFood(food, pixelSize)
+  },
+
+  drawMap: function(mapSize) {
+    this.ctx.strokeRect(0.5, 0.5, mapSize, mapSize)
+  },
+
+  drawSnake: function(snakeLength, path, pixelSize) {
+    for (let i = 0; i < snakeLength; i++) {
+      const index = path.length - 1 - i
+      if (index < 0) {
+        return
+      }
+      const pos = path[index]
+      this.ctx.beginPath()
+      this.ctx.fillStyle = '#4d4d4d'
+      this.ctx.fillRect(pos.x, pos.y, pixelSize, pixelSize)
+      this.ctx.fill()
+    }
+  },
+
+  drawFood: function(food, pixelSize) {
+    this.ctx.fillStyle = '#c22250'
+    this.ctx.fillRect(food.x, food.y, pixelSize, pixelSize)
+  },
+
+  resizeCanvas: function() {
+    this.canvas.width = window.innerWidth
+    this.canvas.height = window.innerHeight
+  }
+}
+
+
 function init () {
-  let canvas
-  let ctx
+  const canvas = new Canvas()
 
   const directions = {
     38: 'up',
@@ -8,8 +54,8 @@ function init () {
     37: 'left',
     39: 'right'
   }
-  const pixelSize = 10
-  const mapSize = 20 * pixelSize
+  const pixelSize = 32
+  const mapSize = 16 * pixelSize
   const gameSpeed = 200
   let food = {}
   let moving
@@ -17,47 +63,6 @@ function init () {
   let gameLoop
   let path
   let isPlaying = false
-
-  function draw() {
-    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
-    drawMap()
-    drawSnake()
-    drawFood()
-  }
-
-  function drawMap() {
-    ctx.strokeRect(0.5, 0.5, mapSize, mapSize)
-  }
-
-  function drawSnake() {
-    for (let i = 0; i < snakeLength; i++) {
-      const index = path.length - 1 - i
-      if (index < 0) {
-        return
-      }
-      const pos = path[index]
-      ctx.beginPath()
-      ctx.fillStyle = '#4d4d4d'
-      ctx.fillRect(pos.x, pos.y, pixelSize, pixelSize)
-      ctx.fill()
-    }
-  }
-
-  function drawFood() {
-    ctx.fillStyle = '#c22250'
-    ctx.fillRect(food.x, food.y, pixelSize, pixelSize)
-  }
-
-  function createCanvas() {
-    canvas = document.createElement('canvas')
-    document.body.appendChild(canvas)
-    ctx = canvas.getContext("2d")
-  }
-
-  function resizeCanvas() {
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
-  }
 
   function setDirection(direction) {
     if (direction) {
@@ -151,13 +156,7 @@ function init () {
     path = [generateRandomPosition()]
   }
 
-  function onResize() {
-    resizeCanvas()
-  }
-
   function onLoadComplete() {
-    createCanvas()
-    resizeCanvas()
     animate()
     resetGame()
   }
@@ -189,7 +188,7 @@ function init () {
   }
 
   function animate() {
-    draw()
+    canvas.draw(mapSize, food, snakeLength, path, pixelSize)
     requestAnimationFrame(animate)
   }
 
@@ -201,7 +200,6 @@ function init () {
 
   window.addEventListener('keydown', onKeyEvent)
   window.addEventListener('load', onLoadComplete)
-  window.addEventListener('resize', onResize)
 }
 
 init()
