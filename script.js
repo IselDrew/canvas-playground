@@ -15,7 +15,7 @@ function init () {
   let moving
   let wormSections
   let gameLoop
-  let path = [generateRandomPosition()]
+  let path
   let isPlaying = false
 
   function draw() {
@@ -116,22 +116,25 @@ function init () {
         return
       }
     }
-    if (pos.x === food.x && pos.y === food.y) {
+    const canEat = pos.x === food.x && pos.y === food.y
+    if (canEat) {
       growWorm()
     }
     if (path.length === wormSections) {
       path.shift()
     }
     path.push(pos)
+    if (canEat) {
+      generateFood()
+    }
   }
 
   function growWorm() {
     wormSections++
-    generateFood()
   }
 
   function endGame() {
-    console.warn('GAME OVER')
+    console.warn(`GAME OVER. YOUR SCORE: ${path.length - 2}`)
     isPlaying = false
     clearInterval(gameLoop)
   }
@@ -152,10 +155,14 @@ function init () {
     createCanvas()
     resizeCanvas()
     animate()
+    resetGame()
   }
 
   function onKeyEvent(event) {
-    if (!moving || !isPlaying) {
+    if (!moving) {
+      startGame()
+    }
+    if (!isPlaying) {
       resetGame()
       startGame()
     }
