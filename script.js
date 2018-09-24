@@ -8,12 +8,12 @@ function init () {
     37: 'left',
     39: 'right'
   }
-  const wormSize = 10
+  const pixelSize = 10
+  const mapSize = 20 * pixelSize
   const gameSpeed = 200
-  const food = {}
-  const square = 20 * wormSize
+  let food = {}
   let moving
-  let wormSections
+  let snakeLength
   let gameLoop
   let path
   let isPlaying = false
@@ -21,16 +21,16 @@ function init () {
   function draw() {
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
     drawMap()
-    drawWorm()
+    drawSnake()
     drawFood()
   }
 
   function drawMap() {
-    ctx.strokeRect(0.5, 0.5, square, square)
+    ctx.strokeRect(0.5, 0.5, mapSize, mapSize)
   }
 
-  function drawWorm() {
-    for (let i = 0; i < wormSections; i++) {
+  function drawSnake() {
+    for (let i = 0; i < snakeLength; i++) {
       const index = path.length - 1 - i
       if (index < 0) {
         return
@@ -38,14 +38,14 @@ function init () {
       const pos = path[index]
       ctx.beginPath()
       ctx.fillStyle = '#4d4d4d'
-      ctx.fillRect(pos.x, pos.y, wormSize, wormSize)
+      ctx.fillRect(pos.x, pos.y, pixelSize, pixelSize)
       ctx.fill()
     }
   }
 
   function drawFood() {
     ctx.fillStyle = '#c22250'
-    ctx.fillRect(food.x, food.y, wormSize, wormSize)
+    ctx.fillRect(food.x, food.y, pixelSize, pixelSize)
   }
 
   function createCanvas() {
@@ -85,7 +85,7 @@ function init () {
   }
 
   function generateRandomCoordinate() {
-    return Math.floor(Math.random() * square / wormSize) * wormSize
+    return Math.floor(Math.random() * mapSize / pixelSize) * pixelSize
   }
 
   function getNewPosition(dir) {
@@ -93,16 +93,16 @@ function init () {
     const pos = { x: head.x, y: head.y }
     switch (dir) {
       case 'up':
-        pos.y -= wormSize
+        pos.y -= pixelSize
         break
       case 'down':
-        pos.y += wormSize
+        pos.y += pixelSize
         break
       case 'left':
-        pos.x -= wormSize
+        pos.x -= pixelSize
         break
       case 'right':
-        pos.x += wormSize
+        pos.x += pixelSize
         break
     }
     return pos
@@ -110,7 +110,7 @@ function init () {
 
   function move() {
     const pos = getNewPosition(moving)
-    if (pos.x < 0 || pos.x >= square || pos.y < 0 || pos.y >= square) {
+    if (pos.x < 0 || pos.x >= mapSize || pos.y < 0 || pos.y >= mapSize) {
       endGame()
       return
     }
@@ -122,9 +122,9 @@ function init () {
     }
     const canEat = pos.x === food.x && pos.y === food.y
     if (canEat) {
-      growWorm()
+      feedSnake()
     }
-    if (path.length === wormSections) {
+    if (path.length === snakeLength) {
       path.shift()
     }
     path.push(pos)
@@ -133,8 +133,8 @@ function init () {
     }
   }
 
-  function growWorm() {
-    wormSections++
+  function feedSnake() {
+    snakeLength++
   }
 
   function endGame() {
@@ -144,7 +144,7 @@ function init () {
   }
 
   function resetGame() {
-    wormSections = 2
+    snakeLength = 2
     moving = null
     delete food.x
     delete food.y
