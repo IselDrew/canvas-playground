@@ -43,7 +43,7 @@ function Snake(pixelSize, mapSize, gameSpeed) {
     37: 'left',
     39: 'right'
   },
-  offsets = {
+  this.offsets = {
     up: [0, -1],
     down: [0, 1],
     left: [-1, 0],
@@ -70,7 +70,7 @@ Snake.prototype = {
     const pos = this.generateRandomPosition()
     for (let i = 0; i < this.path.length; i++) {
       const snake = this.path[i]
-      if (collide(snake.x, snake.y, pos.x, pos.y)) {
+      if (this.collide(snake.x, snake.y, pos.x, pos.y)) {
         this.generateFood()
         return
       }
@@ -96,14 +96,14 @@ Snake.prototype = {
     return { x: head.x + o[0], y: head.y + o[1] }
   },
 
-  checkCollisionWithWall: function(x, y) {
+  collideWall: function(x, y) {
     return x < 0 || x >= this.mapSize || y < 0 || y >= this.mapSize
   },
 
-  checkCollisionWithSelf: function(x, y) {
+  collideSelf: function(x, y) {
     for (let i = 0; i < this.path.length; i++) {
       const p = this.path[i]
-      if (collide(p.x, p.y, x, y)) {
+      if (this.collide(p.x, p.y, x, y)) {
         return true
       }
     }
@@ -116,12 +116,12 @@ Snake.prototype = {
 
   move: function() {
     const pos = this.getNewPosition(this.moving)
-    if (this.checkCollisionWithWall(pos.x, pos.y) ||
-        this.checkCollisionWithSelf(pos.x, pos.y)) {
+    if (this.collideWall(pos.x, pos.y) ||
+        this.collideSelf(pos.x, pos.y)) {
       this.endGame()
       return
     }
-    const canEat = collide(pos.x, pos.y, this.food.x, this.food.y)
+    const canEat = this.collide(pos.x, pos.y, this.food.x, this.food.y)
     if (canEat) {
       this.feedSnake()
     }
