@@ -43,7 +43,7 @@ function Snake(pixelSize, map, gameSpeed) {
     37: 'left',
     39: 'right'
   },
-  this.offsets = {
+  this.moves = {
     up: [0, -1],
     down: [0, 1],
     left: [-1, 0],
@@ -53,7 +53,7 @@ function Snake(pixelSize, map, gameSpeed) {
   this.gameSpeed = gameSpeed
   this.isPlaying = false
   this.food = []
-  this.moving
+  this.direction
   this.length
   this.gameLoop
   this.snake
@@ -62,7 +62,7 @@ function Snake(pixelSize, map, gameSpeed) {
 Snake.prototype = {
   setDirection: function(direction) {
     if (direction) {
-      this.moving = direction
+      this.direction = direction
     }
   },
 
@@ -87,7 +87,7 @@ Snake.prototype = {
 
   getNewPosition: function(dir) {
     const head = this.snake[this.snake.length - 1]
-    const o = this.offsets[dir]
+    const o = this.moves[dir]
     return [head[0] + o[0], head[1] + o[1]]
   },
 
@@ -110,7 +110,7 @@ Snake.prototype = {
   },
 
   move: function() {
-    const pos = this.getNewPosition(this.moving)
+    const pos = this.getNewPosition(this.direction)
     if (this.collideWall(pos) || this.collideSelf(pos)) {
       this.endGame()
       return
@@ -155,7 +155,7 @@ Snake.prototype = {
 
   resetGame: function() {
     this.length = 2
-    this.moving = null
+    this.direction = null
     this.food = []
     this.snake = [this.generateRandomPosition()]
   },
@@ -172,17 +172,17 @@ Snake.prototype = {
     if (!dir) {
       return
     }
-    if (!this.moving) {
+    if (!this.direction) {
       this.startGame()
     }
     if (!this.isPlaying) {
       this.resetGame()
       return
     }
-    if (this.moving === 'left' && dir === 'right' ||
-      this.moving === 'right' && dir === 'left' ||
-      this.moving === 'up' && dir === 'down' ||
-      this.moving === 'down' && dir === 'up') {
+    if (this.direction === 'left' && dir === 'right' ||
+      this.direction === 'right' && dir === 'left' ||
+      this.direction === 'up' && dir === 'down' ||
+      this.direction === 'down' && dir === 'up') {
       return
     }
     const pos = this.snake[this.snake.length - 2]
