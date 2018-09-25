@@ -80,13 +80,9 @@ Snake.prototype = {
 
   generateRandomPosition: function() {
     return [
-      this.generateRandomCoordinate(),
-      this.generateRandomCoordinate()
+      Math.floor(Math.random() * this.mapSize[0]),
+      Math.floor(Math.random() * this.mapSize[1])
     ]
-  },
-
-  generateRandomCoordinate: function() {
-    return Math.floor(Math.random() * this.mapSize)
   },
 
   getNewPosition: function(dir) {
@@ -96,7 +92,7 @@ Snake.prototype = {
   },
 
   collideWall: function(x, y) {
-    return x < 0 || x >= this.mapSize || y < 0 || y >= this.mapSize
+    return x < 0 || x >= this.mapSize[0] || y < 0 || y >= this.mapSize[1]
   },
 
   collideSelf: function(x, y) {
@@ -199,17 +195,18 @@ Snake.prototype = {
   },
 
   animate: function() {
-    this.canvas.drawMap(this.mapSize, this.mapSize)
+    this.canvas.drawMap(this.mapSize[0], this.mapSize[1])
     this.drawSnake()
     this.drawFood()
-    // TODO:
+    // TODO: remove bind
     requestAnimationFrame(this.animate.bind(this))
   }
 }
 
 
 function init () {
-  const snake = new Snake(32, 16, 200)
+  const map = [16, 20]
+  const snake = new Snake(32, map, 200)
   const onKeyEvent = snake.onKeyEvent.bind(snake)
 
   function onLoadComplete() {
@@ -222,3 +219,6 @@ function init () {
 }
 
 init()
+
+// Add walls
+// Add ability to go through map
