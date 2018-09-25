@@ -1,197 +1,238 @@
-var assets = {
-    logo: 'https://images.icanvas.com/2d/3607.jpg'
-};
-var images = {};
-var canvas;
+function Canvas(px) {
+  this.px = px
+  this.createCanvas()
+  this.onResize()
+  window.addEventListener('resize', this.onResize.bind(this))
+}
 
-function draw() {
-    var ctx = canvas.getContext('2d');
+Canvas.prototype = {
+  createCanvas: function() {
+    this.canvas = document.createElement('canvas')
+    document.body.appendChild(this.canvas)
+    this.ctx = this.canvas.getContext("2d")
+  },
 
-    ctx.fillStyle = 'orange'; //orange rectangle
-    ctx.fillRect(10, 10, 100, 100); //x, y, width, height
+  drawMap: function(x, y) {
+    this.ctx.clearRect(0, 0, this.ww, this.wh)
+    this.ctx.strokeRect(0.5, 0.5, x * this.px, y * this.px)
+  },
 
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'; //alpha-rectangular
-    ctx.fillRect(110, 10, 100, 100);
+  drawPoint: function(x, y, color) {
+    this.ctx.fillStyle = color
+    this.ctx.fillRect(x * this.px, y * this.px, this.px, this.px)
+  },
 
-    ctx.fillStyle = 'black' //black window
-    ctx.fillRect(10, 110, 100, 100);
-    ctx.clearRect(30, 130, 60, 60);
-    ctx.strokeRect(35, 135, 50, 50); //rectangular outline
+  resizeCanvas: function() {
+    this.canvas.width = this.ww
+    this.canvas.height = this.wh
+  },
 
-    ctx.fillStyle = 'red' //red filled triangle
-    ctx.beginPath();
-    ctx.moveTo(110, 110);
-    ctx.lineTo(210, 210);
-    ctx.lineTo(110, 210);
-    ctx.fill();
+  onResize: function() {
+    this.ww = window.innerWidth
+    this.wh = window.innerHeight
+    this.resizeCanvas()
+  }
+}
 
-    ctx.beginPath(); //stroke triangle
-    ctx.lineWidth = 2;
-    ctx.moveTo(110, 110); 
-    ctx.lineTo(210, 110);
-    ctx.lineTo(210, 210);
-    ctx.closePath();
-    ctx.stroke();
 
-    ctx.beginPath(); // emoji
-    //ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise)!
-    ctx.lineWidth = 1;
-    ctx.arc(60, 160, 25, 0, Math.PI * 2, true); // Outer circle
-    ctx.moveTo(80, 160);
-    ctx.arc(60, 160, 20, 0, Math.PI, false);  // Mouth (clockwise)
-    ctx.moveTo(53, 155);
-    ctx.arc(50, 155, 2.5, 0, Math.PI * 2, true);  // Left eye
-    ctx.moveTo(73, 155);
-    ctx.arc(70, 155, 2.5, 0, Math.PI * 2, true);  // Right eye
-    ctx.stroke();
+function Snake(pixelSize, map, gameSpeed) {
+  this.canvas = new Canvas(pixelSize)
+  this.directions = {
+    38: 'up',
+    40: 'down',
+    37: 'left',
+    39: 'right'
+  },
+  this.moves = {
+    up: [0, -1],
+    down: [0, 1],
+    left: [-1, 0],
+    right: [1, 0]
+  },
+  this.initialLength = 2
+  this.map = map
+  this.gameSpeed = gameSpeed
+  this.isPlaying = false
+  this.food = []
+  this.direction
+  this.length
+  this.gameLoop
+  this.snake
+}
 
-    var lingrad = ctx.createLinearGradient(0, 210 , 210, 0); //Gradient Circle
-    lingrad.addColorStop(0, '#00ABEB');
-    lingrad.addColorStop(0.6, '#fff');
-    ctx.fillStyle = lingrad; 
-    ctx.beginPath();
-    ctx.arc(160, 160, 25, 0, Math.PI * 2, true);
-    ctx.fill();
+Snake.prototype = {
+  setDirection: function(direction) {
+    this.direction = direction
+  },
 
-    ctx.drawImage(images.logo, 210, 10, 300, 200);
+  setFood: function(food) {
+    this.food = food
+  },
 
-    ctx.fillStyle = 'black';
-    ctx.font = '48px papyrus';
-    ctx.fillText('CANVAS PLAYGROUND', 10, 250);
+  setLength: function(length) {
+    this.length = length
+  },
 
-    ctx.fillStyle = 'white'; //Dialogue cloud using Bezier curves
-    ctx.beginPath();
-    ctx.moveTo(510, 7);
-    //ctx.quadraticCurveTo(c1x, c1y, x, y)
-    ctx.quadraticCurveTo(425, 2, 420, 37);
-    ctx.quadraticCurveTo(415, 97, 450, 107);
-    ctx.quadraticCurveTo(450, 137, 400, 137);
-    ctx.quadraticCurveTo(475, 142, 470, 107);
-    ctx.quadraticCurveTo(550, 122, 550, 52);
-    ctx.quadraticCurveTo(550, 7, 510, 7);
-    ctx.fill();
-    ctx.lineWidth = 3;
-    ctx.stroke();
-
-    ctx.shadowOffsetX = 3; //Text with shadow inside of dialogue cloud
-    ctx.shadowOffsetY = 3;
-    ctx.shadowBlur = 5;
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-    ctx.fillStyle = 'black';
-    ctx.font = '40px Times New Roman';
-    ctx.lineWidth = 1;
-    ctx.strokeText('2+2=5', 430, 70);
-
-    ctx.shadowColor = 'rgba(0, 0, 0, 0)'; //Blue-black rectangles
-    ctx.fillRect(10, 255, 150, 150);   // Draw a rectangle with default settings
-    ctx.save();                        // Save the default state
-   
-    ctx.fillStyle = '#09F';            // Make changes to the settings
-    ctx.fillRect(25, 270, 120, 120);   // Draw a rectangle with new settings
-    ctx.save();                        // Save the current state
-
-    ctx.fillStyle = '#FFF';            // Make changes to the settings
-    ctx.globalAlpha = 0.5; 
-    ctx.fillRect(40, 285, 90, 90);     // Draw a rectangle with new settings
-  
-    ctx.restore();                     // Restore previous state
-    ctx.fillRect(55, 300, 60, 60);     // Draw a rectangle with restored settings
-  
-    ctx.restore();                     // Restore original state
-    ctx.fillRect(70, 315, 30, 30);     // Draw a rectangle with restored settings
-
-    for (var i = 0; i < 3; i++) { //few colorful rectangles
-        for (var j = 0; j < 3; j++) {
-            ctx.save();
-            ctx.fillStyle = `rgb(${90 * i}, ${255 - 51 * i}, 255)`;
-            ctx.translate(10 + j*30, 10 + i*30);
-            ctx.fillRect(168, 275, 25, 25);
-            ctx.restore();
-        }
+  generateFood: function() {
+    const pos = this.generateRandomPosition()
+    for (let i = 0; i < this.snake.length; i++) {
+      const snake = this.snake[i]
+      if (this.collide(snake, pos)) {
+        this.generateFood()
+        return
+      }
     }
+    this.setFood(pos)
+  },
 
-    ctx.fillStyle = '#0095DD';
-    ctx.fillRect(280, 255, 150, 150);  
-    ctx.translate(355, 330);            // translate to rectangle center 
-                                        // !x = x + 0.5 * width!
-                                        // !y = y + 0.5 * height!
-    ctx.rotate((Math.PI / 180) * 45);   // rotate
-    ctx.translate(-355, -330);          // translate back
+  generateRandomPosition: function() {
+    return [
+      Math.floor(Math.random() * this.map[0]),
+      Math.floor(Math.random() * this.map[1])
+    ]
+  },
 
-    ctx.fillStyle = '#4D4E53';          // draw grey rect
-    ctx.fillRect(280, 255, 150, 150);
-}
+  getNewPosition: function(dir) {
+    const head = this.snake[this.snake.length - 1]
+    const m = this.moves[dir]
+    return [head[0] + m[0], head[1] + m[1]]
+  },
 
+  collideWall: function(p) {
+    return p[0] < 0 || p[0] >= this.map[0] || p[1] < 0 || p[1] >= this.map[1]
+  },
 
-
-function onLoadComplete() {
-    canvas = document.querySelector('canvas');
-    resizeCanvas();
-    draw();
-}
-
-//makes full-page canvas area
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-
-function loadAssets (hash, callback) {
-    var counter = 0;
-    var array = Object.keys(hash);
-
-    array.forEach(function(key) {
-        var img = new Image();
-        img.src = hash[key];
-
-        img.addEventListener('load', function() {
-            counter++;
-            images[key] = img;
-            if (array.length === counter) {
-                callback();
-            }
-        })
-    })
-}
-
-function keyPressed(event) {
-    const keyName = event.keyCode;
-    switch (keyName) {
-        case 38:
-            console.log('You are going up');
-            break;
-        case 40:
-            console.log('You are going down');
-            break;
-        case 37:
-            console.log('You are going left');
-            break;
-        case 39:
-            console.log('You are going right');
-            break;
+  collideSelf: function(p) {
+    for (let i = 0; i < this.snake.length; i++) {
+      const s = this.snake[i]
+      if (this.collide(p, s)) {
+        return true
+      }
     }
-}
+    return false
+  },
 
-function keyStop(event) {
-    const keyName = event.keyCode;
-    if(keyName > 36 && keyName < 41){
-        console.log('You stopped');
+  collide: function(p1, p2) {
+    return p1[0] === p2[0] && p1[1] === p2[1]
+  },
+
+  move: function() {
+    const pos = this.getNewPosition(this.direction)
+    if (this.collideWall(pos) || this.collideSelf(pos)) {
+      this.endGame()
+      return
     }
+    const canEat = this.collide(pos, this.food)
+    if (canEat) {
+      this.setLength(this.length + 1)
+    }
+    this.growSnake(pos)
+    if (canEat) {
+      this.generateFood()
+    }
+  },
+
+  growSnake: function(pos) {
+    if (this.snake.length === this.length) {
+      this.snake.shift()
+    }
+    this.snake.push(pos)
+  },
+
+  drawSnake: function() {
+    for (let i = 0; i < this.length; i++) {
+      const index = this.snake.length - 1 - i
+      if (index < 0) {
+        return
+      }
+      const pos = this.snake[index]
+      this.canvas.drawPoint(pos[0], pos[1], '#4d4d4d')
+    }
+  },
+
+  drawFood: function() {
+    this.canvas.drawPoint(this.food[0], this.food[1], '#c22250')
+  },
+
+  endGame: function() {
+    alert(`GAME OVER. YOUR SCORE: ${this.snake.length - this.initialLength}`)
+    this.isPlaying = false
+    clearInterval(this.gameLoop)
+  },
+
+  resetGame: function() {
+    this.setLength(this.initialLength)
+    this.setDirection(null)
+    this.setFood([])
+    this.snake = [this.generateRandomPosition()]
+  },
+
+  startGame: function() {
+    this.isPlaying = true
+    const move = this.move.bind(this)
+    this.gameLoop = setInterval(move, this.gameSpeed)
+    this.generateFood()
+  },
+
+  onKeyEvent: function(event) {
+    const dir = this.directions[event.keyCode]
+    if (!dir) {
+      return
+    }
+    if (!this.direction) {
+      this.startGame()
+    }
+    if (!this.isPlaying) {
+      this.resetGame()
+      return
+    }
+    if (this.isNewDirectionIncorrect(dir)) {
+      return
+    }
+    const pos = this.snake[this.snake.length - this.initialLength]
+    const newPos = this.getNewPosition(dir)
+    if (pos && this.collide(pos, newPos)) {
+      return
+    }
+    if (dir) {
+      this.setDirection(dir)
+    }
+  },
+
+  isNewDirectionIncorrect: function(dir) {
+    return this.direction === 'left'  && dir === 'right' ||
+           this.direction === 'right' && dir === 'left' ||
+           this.direction === 'up'    && dir === 'down' ||
+           this.direction === 'down'  && dir === 'up'
+  },
+
+  animate: function() {
+    this.canvas.drawMap(this.map[0], this.map[1])
+    this.drawSnake()
+    this.drawFood()
+    // TODO: remove bind
+    requestAnimationFrame(this.animate.bind(this))
+  }
 }
 
-window.addEventListener('load', function() {
-  loadAssets(assets, onLoadComplete);
-});
 
-window.addEventListener('resize', function() {
-    resizeCanvas();
-    draw();
-});
+function init () {
+  const map = [16, 20]
+  const snake = new Snake(32, map, 200)
+  const onKeyEvent = snake.onKeyEvent.bind(snake)
 
-document.addEventListener('keydown', function(event) {
-    keyPressed(event);
-});
+  function onLoadComplete() {
+    snake.animate()
+    snake.resetGame()
+  }
 
-document.addEventListener('keyup', function(event) {
-    keyStop(event);
-});
+  window.addEventListener('keydown', onKeyEvent)
+  window.addEventListener('load', onLoadComplete)
+}
+
+init()
+
+// Add walls
+// Add ability to go through map
+// Add bonus food with limited time
+// Add interface
