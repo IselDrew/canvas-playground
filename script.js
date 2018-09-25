@@ -13,7 +13,7 @@ Canvas.prototype = {
   },
 
   drawMap: function(x, y) {
-    this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
+    this.ctx.clearRect(0, 0, this.ww, this.wh)
     this.ctx.strokeRect(0.5, 0.5, x * this.px, y * this.px)
   },
 
@@ -51,8 +51,8 @@ function Snake(pixelSize, mapSize, gameSpeed) {
   },
   this.mapSize = mapSize
   this.gameSpeed = gameSpeed
-  this.food = {}
   this.isPlaying = false
+  this.food = []
   this.moving
   this.snakeLength
   this.gameLoop
@@ -75,8 +75,7 @@ Snake.prototype = {
         return
       }
     }
-    this.food.x = pos.x
-    this.food.y = pos.y
+    this.food = [pos.x, pos.y]
   },
 
   generateRandomPosition: function() {
@@ -121,7 +120,7 @@ Snake.prototype = {
       this.endGame()
       return
     }
-    const canEat = this.collide(pos.x, pos.y, this.food.x, this.food.y)
+    const canEat = this.collide(pos.x, pos.y, this.food[0], this.food[1])
     if (canEat) {
       this.feedSnake()
     }
@@ -146,7 +145,7 @@ Snake.prototype = {
   },
 
   drawFood: function() {
-    this.canvas.drawPoint(this.food.x, this.food.y, '#c22250')
+    this.canvas.drawPoint(this.food[0], this.food[1], '#c22250')
   },
 
   feedSnake: function() {
@@ -162,7 +161,7 @@ Snake.prototype = {
   resetGame: function() {
     this.snakeLength = 2
     this.moving = null
-    this.food = {}
+    this.food = []
     this.path = [this.generateRandomPosition()]
   },
 
