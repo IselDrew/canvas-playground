@@ -35,7 +35,7 @@ Canvas.prototype = {
 }
 
 
-function Snake(pixelSize, mapSize, gameSpeed) {
+function Snake(pixelSize, map, gameSpeed) {
   this.canvas = new Canvas(pixelSize)
   this.directions = {
     38: 'up',
@@ -49,12 +49,12 @@ function Snake(pixelSize, mapSize, gameSpeed) {
     left: [-1, 0],
     right: [1, 0]
   },
-  this.mapSize = mapSize
+  this.map = map
   this.gameSpeed = gameSpeed
   this.isPlaying = false
   this.food = []
   this.moving
-  this.snakeLength
+  this.length
   this.gameLoop
   this.snake
 }
@@ -80,8 +80,8 @@ Snake.prototype = {
 
   generateRandomPosition: function() {
     return [
-      Math.floor(Math.random() * this.mapSize[0]),
-      Math.floor(Math.random() * this.mapSize[1])
+      Math.floor(Math.random() * this.map[0]),
+      Math.floor(Math.random() * this.map[1])
     ]
   },
 
@@ -92,7 +92,7 @@ Snake.prototype = {
   },
 
   collideWall: function(p) {
-    return p[0] < 0 || p[0] >= this.mapSize[0] || p[1] < 0 || p[1] >= this.mapSize[1]
+    return p[0] < 0 || p[0] >= this.map[0] || p[1] < 0 || p[1] >= this.map[1]
   },
 
   collideSelf: function(p) {
@@ -119,7 +119,7 @@ Snake.prototype = {
     if (canEat) {
       this.feedSnake()
     }
-    if (this.snake.length === this.snakeLength) {
+    if (this.snake.length === this.length) {
       this.snake.shift()
     }
     this.snake.push(pos)
@@ -129,7 +129,7 @@ Snake.prototype = {
   },
 
   drawSnake: function() {
-    for (let i = 0; i < this.snakeLength; i++) {
+    for (let i = 0; i < this.length; i++) {
       const index = this.snake.length - 1 - i
       if (index < 0) {
         return
@@ -144,7 +144,7 @@ Snake.prototype = {
   },
 
   feedSnake: function() {
-    this.snakeLength++
+    this.length++
   },
 
   endGame: function() {
@@ -154,7 +154,7 @@ Snake.prototype = {
   },
 
   resetGame: function() {
-    this.snakeLength = 2
+    this.length = 2
     this.moving = null
     this.food = []
     this.snake = [this.generateRandomPosition()]
@@ -194,7 +194,7 @@ Snake.prototype = {
   },
 
   animate: function() {
-    this.canvas.drawMap(this.mapSize[0], this.mapSize[1])
+    this.canvas.drawMap(this.map[0], this.map[1])
     this.drawSnake()
     this.drawFood()
     // TODO: remove bind
