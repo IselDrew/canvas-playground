@@ -91,14 +91,14 @@ Snake.prototype = {
     return [head[0] + o[0], head[1] + o[1]]
   },
 
-  collideWall: function(x, y) {
-    return x < 0 || x >= this.mapSize[0] || y < 0 || y >= this.mapSize[1]
+  collideWall: function(p) {
+    return p[0] < 0 || p[0] >= this.mapSize[0] || p[1] < 0 || p[1] >= this.mapSize[1]
   },
 
-  collideSelf: function(x, y) {
+  collideSelf: function(p) {
     for (let i = 0; i < this.path.length; i++) {
-      const p = this.path[i]
-      if (this.collide(p, [x, y])) {
+      const s = this.path[i]
+      if (this.collide(p, s)) {
         return true
       }
     }
@@ -111,8 +111,7 @@ Snake.prototype = {
 
   move: function() {
     const pos = this.getNewPosition(this.moving)
-    if (this.collideWall(pos[0], pos[1]) ||
-        this.collideSelf(pos[0], pos[1])) {
+    if (this.collideWall(pos) || this.collideSelf(pos)) {
       this.endGame()
       return
     }
