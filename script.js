@@ -49,6 +49,7 @@ function Snake(pixelSize, map, gameSpeed) {
     left: [-1, 0],
     right: [1, 0]
   },
+  this.initialLength = 2
   this.map = map
   this.gameSpeed = gameSpeed
   this.isPlaying = false
@@ -61,9 +62,15 @@ function Snake(pixelSize, map, gameSpeed) {
 
 Snake.prototype = {
   setDirection: function(direction) {
-    if (direction) {
-      this.direction = direction
-    }
+    this.direction = direction
+  },
+
+  setFood: function(food) {
+    this.food = food
+  },
+
+  setLength: function(length) {
+    this.length = length
   },
 
   generateFood: function() {
@@ -75,7 +82,7 @@ Snake.prototype = {
         return
       }
     }
-    this.food = pos
+    this.setFood(pos)
   },
 
   generateRandomPosition: function() {
@@ -117,7 +124,7 @@ Snake.prototype = {
     }
     const canEat = this.collide(pos, this.food)
     if (canEat) {
-      this.feedSnake()
+      this.setLength(this.length + 1)
     }
     if (this.snake.length === this.length) {
       this.snake.shift()
@@ -143,10 +150,6 @@ Snake.prototype = {
     this.canvas.drawPoint(this.food[0], this.food[1], '#c22250')
   },
 
-  feedSnake: function() {
-    this.length++
-  },
-
   endGame: function() {
     alert(`GAME OVER. YOUR SCORE: ${this.snake.length - 2}`)
     this.isPlaying = false
@@ -154,9 +157,9 @@ Snake.prototype = {
   },
 
   resetGame: function() {
-    this.length = 2
-    this.direction = null
-    this.food = []
+    this.setLength(this.initialLength)
+    this.setDirection(null)
+    this.setFood([])
     this.snake = [this.generateRandomPosition()]
   },
 
@@ -190,7 +193,9 @@ Snake.prototype = {
     if (pos && this.collide(pos, newPos)) {
       return
     }
-    this.setDirection(dir)
+    if (dir) {
+      this.setDirection(dir)
+    }
   },
 
   animate: function() {
