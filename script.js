@@ -94,8 +94,8 @@ Snake.prototype = {
 
   getNewPosition: function(dir) {
     const head = this.snake[this.snake.length - 1]
-    const o = this.moves[dir]
-    return [head[0] + o[0], head[1] + o[1]]
+    const m = this.moves[dir]
+    return [head[0] + m[0], head[1] + m[1]]
   },
 
   collideWall: function(p) {
@@ -126,13 +126,17 @@ Snake.prototype = {
     if (canEat) {
       this.setLength(this.length + 1)
     }
+    this.growSnake(pos)
+    if (canEat) {
+      this.generateFood()
+    }
+  },
+
+  growSnake: function(pos) {
     if (this.snake.length === this.length) {
       this.snake.shift()
     }
     this.snake.push(pos)
-    if (canEat) {
-      this.generateFood()
-    }
   },
 
   drawSnake: function() {
@@ -151,7 +155,7 @@ Snake.prototype = {
   },
 
   endGame: function() {
-    alert(`GAME OVER. YOUR SCORE: ${this.snake.length - 2}`)
+    alert(`GAME OVER. YOUR SCORE: ${this.snake.length - this.initialLength}`)
     this.isPlaying = false
     clearInterval(this.gameLoop)
   },
@@ -182,13 +186,10 @@ Snake.prototype = {
       this.resetGame()
       return
     }
-    if (this.direction === 'left' && dir === 'right' ||
-      this.direction === 'right' && dir === 'left' ||
-      this.direction === 'up' && dir === 'down' ||
-      this.direction === 'down' && dir === 'up') {
+    if (this.isNewDirectionIncorrect(dir)) {
       return
     }
-    const pos = this.snake[this.snake.length - 2]
+    const pos = this.snake[this.snake.length - this.initialLength]
     const newPos = this.getNewPosition(dir)
     if (pos && this.collide(pos, newPos)) {
       return
@@ -196,6 +197,13 @@ Snake.prototype = {
     if (dir) {
       this.setDirection(dir)
     }
+  },
+
+  isNewDirectionIncorrect: function(dir) {
+    return this.direction === 'left'  && dir === 'right' ||
+           this.direction === 'right' && dir === 'left' ||
+           this.direction === 'up'    && dir === 'down' ||
+           this.direction === 'down'  && dir === 'up'
   },
 
   animate: function() {
@@ -226,3 +234,5 @@ init()
 
 // Add walls
 // Add ability to go through map
+// Add bonus food with limited time
+// Add interface
