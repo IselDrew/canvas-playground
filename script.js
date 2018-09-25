@@ -70,19 +70,19 @@ Snake.prototype = {
     const pos = this.generateRandomPosition()
     for (let i = 0; i < this.path.length; i++) {
       const snake = this.path[i]
-      if (this.collide(snake.x, snake.y, pos.x, pos.y)) {
+      if (this.collide(snake[0], snake[1], pos[0], pos[1])) {
         this.generateFood()
         return
       }
     }
-    this.food = [pos.x, pos.y]
+    this.food = [pos[0], pos[1]]
   },
 
   generateRandomPosition: function() {
-    return {
-      x: this.generateRandomCoordinate(),
-      y: this.generateRandomCoordinate()
-    }
+    return [
+      this.generateRandomCoordinate(),
+      this.generateRandomCoordinate()
+    ]
   },
 
   generateRandomCoordinate: function() {
@@ -92,7 +92,7 @@ Snake.prototype = {
   getNewPosition: function(dir) {
     const head = this.path[this.path.length - 1]
     const o = this.offsets[dir]
-    return { x: head.x + o[0], y: head.y + o[1] }
+    return [head[0] + o[0], head[1] + o[1]]
   },
 
   collideWall: function(x, y) {
@@ -102,7 +102,7 @@ Snake.prototype = {
   collideSelf: function(x, y) {
     for (let i = 0; i < this.path.length; i++) {
       const p = this.path[i]
-      if (this.collide(p.x, p.y, x, y)) {
+      if (this.collide(p[0], p[1], x, y)) {
         return true
       }
     }
@@ -115,12 +115,12 @@ Snake.prototype = {
 
   move: function() {
     const pos = this.getNewPosition(this.moving)
-    if (this.collideWall(pos.x, pos.y) ||
-        this.collideSelf(pos.x, pos.y)) {
+    if (this.collideWall(pos[0], pos[1]) ||
+        this.collideSelf(pos[0], pos[1])) {
       this.endGame()
       return
     }
-    const canEat = this.collide(pos.x, pos.y, this.food[0], this.food[1])
+    const canEat = this.collide(pos[0], pos[1], this.food[0], this.food[1])
     if (canEat) {
       this.feedSnake()
     }
@@ -140,7 +140,7 @@ Snake.prototype = {
         return
       }
       const pos = this.path[index]
-      this.canvas.drawPoint(pos.x, pos.y, '#4d4d4d')
+      this.canvas.drawPoint(pos[0], pos[1], '#4d4d4d')
     }
   },
 
@@ -192,7 +192,7 @@ Snake.prototype = {
     }
     const pos = this.path[this.path.length - 2]
     const newPos = this.getNewPosition(dir)
-    if (pos && this.collide(pos.x, pos.y, newPos.x, newPos.y)) {
+    if (pos && this.collide(pos[0], pos[1], newPos[0], newPos[1])) {
       return
     }
     this.setDirection(dir)
