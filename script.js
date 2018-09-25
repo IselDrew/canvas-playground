@@ -70,7 +70,7 @@ Snake.prototype = {
     const pos = this.generateRandomPosition()
     for (let i = 0; i < this.path.length; i++) {
       const snake = this.path[i]
-      if (this.collide(snake[0], snake[1], pos[0], pos[1])) {
+      if (this.collide(snake, pos)) {
         this.generateFood()
         return
       }
@@ -98,15 +98,15 @@ Snake.prototype = {
   collideSelf: function(x, y) {
     for (let i = 0; i < this.path.length; i++) {
       const p = this.path[i]
-      if (this.collide(p[0], p[1], x, y)) {
+      if (this.collide(p, [x, y])) {
         return true
       }
     }
     return false
   },
 
-  collide: function(x1, y1, x2, y2) {
-    return x1 === x2 && y1 === y2
+  collide: function(p1, p2) {
+    return p1[0] === p2[0] && p1[1] === p2[1]
   },
 
   move: function() {
@@ -116,7 +116,7 @@ Snake.prototype = {
       this.endGame()
       return
     }
-    const canEat = this.collide(pos[0], pos[1], this.food[0], this.food[1])
+    const canEat = this.collide(pos, this.food)
     if (canEat) {
       this.feedSnake()
     }
@@ -188,7 +188,7 @@ Snake.prototype = {
     }
     const pos = this.path[this.path.length - 2]
     const newPos = this.getNewPosition(dir)
-    if (pos && this.collide(pos[0], pos[1], newPos[0], newPos[1])) {
+    if (pos && this.collide(pos, newPos)) {
       return
     }
     this.setDirection(dir)
