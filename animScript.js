@@ -13,7 +13,7 @@ snake[0] = {
   y : Math.floor(Math.random()*16) * tile
 }
 
-let food = {
+let berry = {
   x : Math.floor(Math.random()*22) * tile,
   y : Math.floor(Math.random()*16) * tile
 }
@@ -40,9 +40,8 @@ function draw() {
     
     collisions();
 
-    // ctx.fillStyle = 'red';
-    // ctx.fillRect(food.x, food.y, tile, tile)
-    // setInterval(move, 500);
+    ctx.fillStyle = 'red';
+    ctx.fillRect(berry.x, berry.y, tile, tile)
     requestAnimationFrame(draw)
 }
 
@@ -59,7 +58,6 @@ function tileMap(){
     ctx.lineTo(mapWidth, i*tile);
     ctx.stroke();
   } 
-
 }
 
 function collisions(){
