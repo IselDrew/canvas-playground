@@ -19,6 +19,12 @@ snake[0] = {
   y : Math.floor(Math.random()*16) * tile
 }
 
+let food = {
+  x : Math.floor(Math.random()*22) * tile,
+  y : Math.floor(Math.random()*16) * tile
+}
+
+
 const direction = {
     up: false,
     right: false,
@@ -28,18 +34,18 @@ const direction = {
 
 function draw() {
     ctx = canvas.getContext("2d");
-
     ctx.clearRect(0, 0, mapWidth, mapHeight);
+    tileMap();
     move();
 
-    tileMap();
-
-
     ctx.beginPath();
-    ctx.rect(snake[0].x, snake[0].y, tile, tile );
-    ctx.fill();
+    
+    ctx.fillStyle = 'green';
+    ctx.fillRect(snake[0].x, snake[0].y, tile, tile);
+    
 
-    collisions();
+    // ctx.fillStyle = 'red';
+    // ctx.fillRect(food.x, food.y, tile, tile)
 
     requestAnimationFrame(draw)
 }
@@ -61,8 +67,6 @@ function tileMap(){
 }
 
 function collisions(){
-    // console.log(window.innerWidth)
-    // console.log(xPosition)
     if(xPosition < 0){
         xPosition = radius;
     }
@@ -130,16 +134,16 @@ function move () {
     // console.log(event.keyCode)
 
     if (direction.up) {
-        yPosition -= yMovementPosition;
+        snake[0].y -= tile;
     }
     if (direction.down) {
-        yPosition += yMovementPosition;
+        snake[0].y += tile;
     }
     if (direction.left) {
-        xPosition -= xMovementPosition;
+        snake[0].x -= tile;
     }
     if (direction.right) {
-        xPosition += xMovementPosition;
+      snake[0].x += tile;
     }
 }
 
