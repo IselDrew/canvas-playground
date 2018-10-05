@@ -1,12 +1,6 @@
 let canvas;
 let ctx;
 
-let xMovementPosition = 5;
-let yMovementPosition = 5;
-let xPosition = 150;
-let yPosition = 100;
-let radius = 10;
-
 let tile = 32;
 
 let mapWidth = 22*tile;
@@ -24,7 +18,6 @@ let food = {
   y : Math.floor(Math.random()*16) * tile
 }
 
-
 const direction = {
     up: false,
     right: false,
@@ -35,18 +28,21 @@ const direction = {
 function draw() {
     ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, mapWidth, mapHeight);
-    tileMap();
-    move();
+    
+   tileMap();
+  //  move();
+
 
     ctx.beginPath();
     
     ctx.fillStyle = 'green';
     ctx.fillRect(snake[0].x, snake[0].y, tile, tile);
     
+    collisions();
 
     // ctx.fillStyle = 'red';
     // ctx.fillRect(food.x, food.y, tile, tile)
-
+    // setInterval(move, 500);
     requestAnimationFrame(draw)
 }
 
@@ -67,17 +63,17 @@ function tileMap(){
 }
 
 function collisions(){
-    if(xPosition < 0){
-        xPosition = radius;
+    if(snake[0].x < 0){
+      snake[0].x = 0;
     }
-    if(yPosition <= 0){
-        yPosition = radius;
+    if(snake[0].y <= 0){
+        snake[0].y = 0;
     }    
-    if(xPosition >= window.innerWidth){
-        xPosition = window.innerWidth - radius;
+    if(snake[0].x >= mapWidth){
+      snake[0].x = mapWidth - tile;
     }
-    if(yPosition >= window.innerHeight){
-        yPosition = window.innerHeight - radius;
+    if(snake[0].y >= mapHeight){
+      snake[0].y = mapHeight - tile;
     }
 }
 
@@ -94,45 +90,50 @@ function onLoadComplete() {
     draw();
 }
 
+function changeDirection()
+{
+  direction.up = false;
+  direction.down = false;
+  direction.left = false;
+  direction.right = false;
+}
 
 function keyWasPressed (event) {
-    switch (event.keyCode) {
+      switch (event.keyCode) {
         case 38://up
-            direction.up = true
+            direction.up = true;
             break;
         case 40://down
-            direction.down = true
+            direction.down = true;
             break;
         case 37://left
-            direction.left = true
+            direction.left = true;
             break;
         case 39://right
-            direction.right = true
+            direction.right = true;
             break;
     }
 }
 
-function keyWasUnpressed (event) {
-    switch (event.keyCode) {
-        case 38://up
-            direction.up = false
-            break;
-        case 40://down
-            direction.down = false
-            break;
-        case 37://left
-            direction.left = false
-            break;
-        case 39://right
-            direction.right = false
-            break;
-    }
-}
+// function keyWasUnpressed (event) {
+//     switch (event.keyCode) {
+//         case 38://up
+//             direction.up = false
+//             break;
+//         case 40://down
+//             direction.down = false
+//             break;
+//         case 37://left
+//             direction.left = false
+//             break;
+//         case 39://right
+//             direction.right = false
+//             break;
+//     }
+// }
 
 
 function move () {
-    // console.log(event.keyCode)
-
     if (direction.up) {
         snake[0].y -= tile;
     }
@@ -147,7 +148,12 @@ function move () {
     }
 }
 
-window.addEventListener('keydown', keyWasPressed)
-window.addEventListener('keyup', keyWasUnpressed)
+window.addEventListener('keydown', function(event) {
+  changeDirection();
+  keyWasPressed(event);
+})
+// window.addEventListener('keyup', keyWasUnpressed)
 
 window.addEventListener('load', onLoadComplete);
+
+let game = setInterval(move, 125);
