@@ -48,14 +48,14 @@ function draw() {
 function tileMap(){
   for(let i = 0; i < mapHeight; i++){
     ctx.beginPath();
-    ctx.moveTo(i*tile, 0);
-    ctx.lineTo(i*tile, mapHeight);
+    ctx.moveTo(i*tile, 0+0.5);
+    ctx.lineTo(i*tile, mapHeight+0.5);
     ctx.stroke();
   }   
   for(let i = 0; i < mapHeight; i++){
     ctx.beginPath();
-    ctx.moveTo(0, i*tile);
-    ctx.lineTo(mapWidth, i*tile);
+    ctx.moveTo(0, i*tile+0.5);
+    ctx.lineTo(mapWidth, i*tile+0.5);
     ctx.stroke();
   } 
 }
