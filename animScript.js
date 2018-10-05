@@ -7,6 +7,18 @@ let xPosition = 150;
 let yPosition = 100;
 let radius = 10;
 
+let tile = 32;
+
+let mapWidth = 22*tile;
+let mapHeight = 16*tile;
+
+let snake = [];
+
+snake[0] = {
+  x : Math.floor(Math.random()*22) * tile,
+  y : Math.floor(Math.random()*16) * tile
+}
+
 const direction = {
     up: false,
     right: false,
@@ -16,16 +28,36 @@ const direction = {
 
 function draw() {
     ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+    ctx.clearRect(0, 0, mapWidth, mapHeight);
     move();
 
+    tileMap();
+
+
     ctx.beginPath();
-    ctx.arc(xPosition, yPosition, radius, 0, 2 * Math.PI);
+    ctx.rect(snake[0].x, snake[0].y, tile, tile );
     ctx.fill();
 
     collisions();
 
     requestAnimationFrame(draw)
+}
+
+function tileMap(){
+  for(let i = 0; i < mapHeight; i++){
+    ctx.beginPath();
+    ctx.moveTo(i*tile, 0);
+    ctx.lineTo(i*tile, mapHeight);
+    ctx.stroke();
+  }   
+  for(let i = 0; i < mapHeight; i++){
+    ctx.beginPath();
+    ctx.moveTo(0, i*tile);
+    ctx.lineTo(mapWidth, i*tile);
+    ctx.stroke();
+  } 
+
 }
 
 function collisions(){
@@ -46,8 +78,8 @@ function collisions(){
 }
 
 function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = mapWidth;
+    canvas.height = mapHeight;
 }
 
 function onLoadComplete() {
@@ -115,7 +147,3 @@ window.addEventListener('keydown', keyWasPressed)
 window.addEventListener('keyup', keyWasUnpressed)
 
 window.addEventListener('load', onLoadComplete);
-
-//1. Diagonal movement
-//2. Borders
-//3. Speed management
