@@ -42,6 +42,11 @@ function draw() {
 
     ctx.fillStyle = 'red';
     ctx.fillRect(berry.x, berry.y, tile, tile)
+
+    if(snake[0].x === berry.x && snake[0].y === berry.y){
+        berry.x = Math.floor(Math.random()*22) * tile;
+        berry.y = Math.floor(Math.random()*16) * tile;
+    }
     requestAnimationFrame(draw)
 }
 
