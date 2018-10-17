@@ -30,28 +30,36 @@ function draw() {
     ctx.clearRect(0, 0, mapWidth, mapHeight);
     
     tileMap();
-  //  move();
 
     ctx.beginPath();
-    
     ctx.fillStyle = 'green';
     ctx.fillRect(snake[0].x, snake[0].y, tile, tile);
-    
-    collisions();
 
     ctx.fillStyle = 'red';
     ctx.fillRect(berry.x, berry.y, tile, tile)
 
     changeBerryPosition();
+    collisions();
+
     requestAnimationFrame(draw)
 }
 
-function changeBerryPosition(){
+function checkBerryPosition(){
     if(snake[0].x === berry.x && snake[0].y === berry.y){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function changeBerryPosition(){
+    if(checkBerryPosition() === true){
         berry.x = Math.floor(Math.random()*22) * tile;
         berry.y = Math.floor(Math.random()*16) * tile;
-    } 
+        //addTail();
+    }
 }
+
 
 function tileMap(){
   for(let i = 0; i < mapHeight; i++){
