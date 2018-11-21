@@ -1,13 +1,12 @@
 const myTimer = setInterval(draw,100);
 
-
 let canvas;
 let ctx;
 
 let tile = 32;
 let mapSize = [22, 16]
-let mapWidth = 22*tile;
-let mapHeight = 16*tile;
+let mapWidth = mapSize[0]*tile;
+let mapHeight = mapSize[1]*tile;
 
 let snake = [];
 
@@ -43,54 +42,42 @@ function draw(){
     ctx.fillStyle = 'red';
     ctx.fillRect(berry.x, berry.y, tile, tile)
 
-
+    let score = snake.length*10;
 
     let snakeXcoord = snake[0].x;
     let snakeYcoord = snake[0].y;
 
-
-   // console.log(snakeXcoord, snakeYcoord)
-
-   // const newCoords = move(snakeXcoord, snakeYcoord);
-   // console.log(snakeXcoord, snakeYcoord)
- 
- 
-    if( direction == "UP") {
-        snakeYcoord -= tile;
-     }
-    if( direction == "RIGHT"){
-        snakeXcoord += tile;
-    }
-    if( direction == "DOWN"){
-        snakeYcoord += tile;
-    }
-    if( direction == "LEFT"){
-        snakeXcoord -= tile;
-    } 
-
-
-
+    const newCoords = move(snakeXcoord, snakeYcoord);
     
-    if(snakeXcoord == berry.x && snakeYcoord == berry.y){
-        berry = generateCoordinates();
+    if(newCoords[0] == berry.x && newCoords[1] == berry.y){
+        console.log(score);
+        changeBerryPosition(); //berry = generateCoordinates();
     }else{
         snake.pop();
     }
-    
-    // add new Head
-    
-    let newHead = {
-        x : snakeXcoord,
-        y : snakeYcoord
+        
+    let tale = {
+        x : newCoords[0],
+        y : newCoords[1]
     }
 
-    snake.unshift(newHead);
+    snake.unshift(tale);
+}
+
+
+
+function endGame(){
+    for(let i = 0; i < array.length; i++){
+        if(tale.x == array[i].x && tale.y == array[i].y){
+            
+        }
+    }
+
 }
 
 
 
 //--------------------------Movement---------------------------
-
 let direction;
 
 function keyWasPressed (event) {
@@ -120,28 +107,15 @@ function move(x, y) {
     if (direction === "LEFT") {
         x -= tile;
     }
-    const coords = [x, y]
+    const coords = [x, y];
 
-    return coords
+    return coords;
 }
 
-
-function checkBerryPosition(){
-    if(snake[0].x === berry.x && snake[0].y === berry.y){
-        return true;
-    } else {
-        return false;
-    }
-}
 
 function changeBerryPosition(){
-    if(checkBerryPosition() === true){
-        berry.x = Math.floor(Math.random()*22) * tile;
-        berry.y = Math.floor(Math.random()*16) * tile;
-
-    }
+    berry = generateCoordinates();
 }
-
 
 //-------------------------Map Logic---------------------------
 
@@ -187,7 +161,6 @@ function onLoadComplete(){
     document.body.appendChild(canvas);
     resizeCanvas(); //1. put size of canvas window
     draw(); //2. draw objects
-
 }
 
 //---------------------EventListeners----------------------
