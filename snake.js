@@ -1,4 +1,4 @@
-const myTimer = setInterval(draw,100);
+const gameTimer = setInterval(draw,125);
 
 let canvas;
 let ctx;
@@ -30,6 +30,8 @@ function draw(){
     ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, mapWidth, mapHeight);
 
+    let score = (snake.length-1)*10;
+
     tileMap();
 
     ctx.beginPath();
@@ -42,7 +44,7 @@ function draw(){
     ctx.fillStyle = 'red';
     ctx.fillRect(berry.x, berry.y, tile, tile)
 
-    let score = snake.length*10;
+
 
     let snakeXcoord = snake[0].x;
     let snakeYcoord = snake[0].y;
@@ -62,19 +64,35 @@ function draw(){
     }
 
     snake.unshift(tale);
-}
 
-
-
-function endGame(){
-    for(let i = 0; i < array.length; i++){
-        if(tale.x == array[i].x && tale.y == array[i].y){
-            
-        }
+    if(gameOver(snake, tale) === true){
+        console.log(true);
+        clearInterval(gameTimer);
+       // alert("Game over\nYour score: " + score);
     }
-
 }
 
+
+
+function gameOver(head, tale){
+    for(let i = 0; i < head.length; i++){
+        
+    }
+    if(snake[0].x < 0){
+        return true;
+    }
+    if(snake[0].y < 0){ 
+        return true;
+    }    
+    if(snake[0].x >= mapWidth){
+        return true;
+    }
+    if(snake[0].y >= mapHeight){
+        return true;
+    } else {
+        return false;
+    }
+}
 
 
 //--------------------------Movement---------------------------
@@ -120,8 +138,7 @@ function changeBerryPosition(){
 //-------------------------Map Logic---------------------------
 
 function tileMap(){
-
-    for(let i = 0; i < mapHeight; i++){
+     for(let i = 0; i < mapWidth; i++){
       ctx.beginPath();
       ctx.moveTo(i*tile, 0+0.5);
       ctx.lineTo(i*tile, mapHeight+0.5);
