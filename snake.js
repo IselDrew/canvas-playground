@@ -44,8 +44,6 @@ function draw(){
     ctx.fillStyle = 'red';
     ctx.fillRect(berry.x, berry.y, tile, tile)
 
-
-
     let snakeXcoord = snake[0].x;
     let snakeYcoord = snake[0].y;
 
@@ -65,7 +63,7 @@ function draw(){
 
     snake.unshift(tale);
 
-    if(gameOver(snake, tale) === true){
+    if(gameOver(tale)){
         console.log(true);
         clearInterval(gameTimer);
        // alert("Game over\nYour score: " + score);
@@ -74,10 +72,7 @@ function draw(){
 
 
 
-function gameOver(head, tale){
-    for(let i = 0; i < head.length; i++){
-        
-    }
+function gameOver(tale){
     if(snake[0].x < 0){
         return true;
     }
@@ -92,6 +87,13 @@ function gameOver(head, tale){
     } else {
         return false;
     }
+    /*   for(let i = 0; i < tale.length; i++){
+
+        if(tale.x == head[i].x && tale.y == head[i].y){
+            return true;
+        }
+    }
+    return false;*/
 }
 
 
@@ -150,23 +152,8 @@ function tileMap(){
       ctx.lineTo(mapWidth, i*tile+0.5);
       ctx.stroke();
     } 
-    collisions();
 }
 
-function collisions(){
-    if(snake[0].x < 0){
-      snake[0].x = 0;
-    }
-    if(snake[0].y <= 0){
-        snake[0].y = 0;
-    }    
-    if(snake[0].x >= mapWidth){
-      snake[0].x = mapWidth - tile;
-    }
-    if(snake[0].y >= mapHeight){
-      snake[0].y = mapHeight - tile;
-    }
-}
 
 function resizeCanvas() {
     canvas.width = mapWidth;
