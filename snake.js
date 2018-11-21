@@ -140,13 +140,15 @@ function changeBerryPosition(){
 //-------------------------Map Logic---------------------------
 
 function tileMap(){
-     for(let i = 0; i < mapWidth; i++){
+    let snakeMapWidth = 1+mapWidth/tile
+    let snakeMapHeight = 1+mapHeight/tile
+     for(let i = 0; i < snakeMapWidth; i++){
       ctx.beginPath();
       ctx.moveTo(i*tile, 0+0.5);
       ctx.lineTo(i*tile, mapHeight+0.5);
       ctx.stroke();
     }   
-    for(let i = 0; i < mapHeight; i++){
+    for(let i = 0; i < snakeMapHeight; i++){
       ctx.beginPath();
       ctx.moveTo(0, i*tile+0.5);
       ctx.lineTo(mapWidth, i*tile+0.5);
@@ -156,7 +158,7 @@ function tileMap(){
 
 
 function resizeCanvas() {
-    canvas.width = mapWidth;
+    canvas.width = mapWidth+(tile*5);
     canvas.height = mapHeight;
 }
 
