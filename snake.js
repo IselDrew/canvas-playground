@@ -28,13 +28,15 @@ let berry = generateCoordinates();
 
 function draw(){
     ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, mapWidth, mapHeight);
+    ctx.clearRect(0, 0, mapWidth+(tile*5), mapHeight);
+
+    tileMap();
+    
+    ctx.beginPath();
 
     let score = (snake.length-1)*10;
 
-    tileMap();
-
-    ctx.beginPath();
+    menu(score);
     
     for(let i = 0; i< snake.length; i++){
         ctx.fillStyle = 'green';
@@ -66,11 +68,23 @@ function draw(){
     if(gameOver(tale)){
         console.log(true);
         clearInterval(gameTimer);
-       // alert("Game over\nYour score: " + score);
+        
+        ctx.font = '75px times new roman';
+        ctx.fillStyle = 'red'
+       // ctx.strokeText();
+        ctx.fillText("Game Over", mapWidth/3, mapHeight/2.2);
+
     }
 }
 
-
+function menu(score){
+    ctx.font = '30px times new roman';
+    ctx.strokeText("Your Score:", mapWidth+10, 50);
+    ctx.font = '40px times new roman';
+    let scoreSize = ctx.measureText(score) 
+//  console.log(text.width); 
+    ctx.strokeText(score, (mapWidth+tile*4.5)-scoreSize.width, tile*3);
+}
 
 function gameOver(tale){
     if(snake[0].x < 0){
