@@ -1,4 +1,4 @@
-const gameTimer = setInterval(draw,125);
+const gameTimer = setInterval(draw, difficulty());
 
 let canvas;
 let ctx;
@@ -77,6 +77,27 @@ function draw(){
     }
 }
 
+
+function difficulty(){
+    let gameSpeed = 125; //defalut 
+    let difficulty = prompt("Choose difficulty:\n(easy, normal, hard, impossible) ").toLowerCase();
+        switch(difficulty){
+            case 'easy':
+                gameSpeed = 200;
+                break;
+            case 'normal':
+                gameSpeed = 125;
+                break;
+            case 'hard':
+                gameSpeed = 90;
+                break;
+            case 'impossible':
+                gameSpeed = 60;
+                break;
+        }
+        return gameSpeed;
+}
+
 function menu(score){
     ctx.font = '30px times new roman';
     ctx.strokeText("Your Score:", mapWidth+10, 50);
@@ -85,6 +106,8 @@ function menu(score){
 //  console.log(text.width); 
     ctx.strokeText(score, (mapWidth+tile*4.5)-scoreSize.width, tile*3);
 }
+
+
 
 function gameOver(tale){
     if(snake[0].x < 0){
@@ -180,6 +203,7 @@ function onLoadComplete(){
     canvas = document.createElement('canvas');
     document.body.appendChild(canvas);
     resizeCanvas(); //1. put size of canvas window
+//    difficulty();
     draw(); //2. draw objects
 }
 
