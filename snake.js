@@ -1,4 +1,4 @@
-const gameTimer = setInterval(draw, difficulty());
+const gameTimer = setInterval(draw,125);//difficulty());
 
 let canvas;
 let ctx;
@@ -63,20 +63,18 @@ function draw(){
         y : newCoords[1]
     }
 
+    if(snakeCollision(tale, snake) === true){
+        gameOver();
+    }
+
     snake.unshift(tale);
 
-    if(gameOver(tale)){
-        console.log(true);
-        clearInterval(gameTimer);
-        
-        ctx.font = '75px times new roman';
-        ctx.fillStyle = 'red'
-       // ctx.strokeText();
-        ctx.fillText("Game Over", mapWidth/3, mapHeight/2.2);
-
+    if(bordersCollision(snake) === true){
+        gameOver();
     }
 }
 
+//----------------------------Menu parts-------------------------
 
 function difficulty(){
     let gameSpeed = 125; //defalut 
@@ -103,36 +101,17 @@ function menu(score){
     ctx.strokeText("Your Score:", mapWidth+10, 50);
     ctx.font = '40px times new roman';
     let scoreSize = ctx.measureText(score) 
-//  console.log(text.width); 
     ctx.strokeText(score, (mapWidth+tile*4.5)-scoreSize.width, tile*3);
 }
 
+function gameOver(){
+//  console.log(true);
+    clearInterval(gameTimer);
 
-
-function gameOver(tale){
-    if(snake[0].x < 0){
-        return true;
-    }
-    if(snake[0].y < 0){ 
-        return true;
-    }    
-    if(snake[0].x >= mapWidth){
-        return true;
-    }
-    if(snake[0].y >= mapHeight){
-        return true;
-    } else {
-        return false;
-    }
-    /*   for(let i = 0; i < tale.length; i++){
-
-        if(tale.x == head[i].x && tale.y == head[i].y){
-            return true;
-        }
-    }
-    return false;*/
+    ctx.font = '75px times new roman';
+    ctx.fillStyle = 'red'
+    ctx.fillText("Game Over", mapWidth/3, mapHeight/2.2);
 }
-
 
 //--------------------------Movement---------------------------
 let direction;
@@ -169,12 +148,38 @@ function move(x, y) {
     return coords;
 }
 
-
 function changeBerryPosition(){
     berry = generateCoordinates();
 }
 
 //-------------------------Map Logic---------------------------
+
+function snakeCollision(tale,snake){
+    for(let i = 0; i < snake.length; i++){
+        if(tale.x == snake[i].x && tale.y == snake[i].y){
+            return true;
+        }
+    }
+    return false;
+}
+
+function bordersCollision(array){
+    if(array[0].x < 0){
+        return true;
+    }
+    if(array[0].y < 0){ 
+        return true;
+    }    
+    if(array[0].x >= mapWidth){
+        return true;
+    }
+    if(array[0].y >= mapHeight){
+        return true;
+    } else {
+        return false;
+    }
+}
+
 
 function tileMap(){
     let snakeMapWidth = 1+mapWidth/tile
@@ -203,7 +208,6 @@ function onLoadComplete(){
     canvas = document.createElement('canvas');
     document.body.appendChild(canvas);
     resizeCanvas(); //1. put size of canvas window
-//    difficulty();
     draw(); //2. draw objects
 }
 
