@@ -58,16 +58,16 @@ function draw(){
         snake.pop();
     }
         
-    let tale = {
+    let tail = {
         x : newCoords[0],
         y : newCoords[1]
     }
 
-    if(snakeCollision(tale, snake) === true){
+    if(snakeCollision(tail, snake) === true){
         gameOver();
     }
 
-    snake.unshift(tale);
+    snake.unshift(tail);
 
     if(bordersCollision(snake) === true){
         gameOver();
@@ -154,9 +154,9 @@ function changeBerryPosition(){
 
 //-------------------------Map Logic---------------------------
 
-function snakeCollision(tale,snake){
+function snakeCollision(tail,snake){
     for(let i = 0; i < snake.length; i++){
-        if(tale.x == snake[i].x && tale.y == snake[i].y){
+        if(tail.x == snake[i].x && tail.y == snake[i].y){
             return true;
         }
     }
