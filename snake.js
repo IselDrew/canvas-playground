@@ -1,17 +1,17 @@
-const gameTimer = setInterval(draw,125);//difficulty());
+const gameTimer = setInterval(draw, 125);//difficulty());
 
 let canvas;
 let ctx;
 
 let tile = 32;
 let mapSize = [22, 16]
-let mapWidth = mapSize[0]*tile;
-let mapHeight = mapSize[1]*tile;
+let mapWidth = mapSize[0] * tile;
+let mapHeight = mapSize[1] * tile;
 
 let snake = [];
 
 function generateCoordinate (limit) {
-    return Math.floor(Math.random()*limit) * tile
+    return Math.floor(Math.random() * limit) * tile
 }
 
 function generateCoordinates () {
@@ -28,13 +28,13 @@ let berry = generateCoordinates();
 
 function draw(){
     ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, mapWidth+(tile*5), mapHeight);
+    ctx.clearRect(0, 0, mapWidth + (tile * 5), mapHeight);
 
     tileMap();
     
     ctx.beginPath();
 
-    let score = (snake.length-1)*10;
+    let score = (snake.length - 1) * 10;
 
     menu(score);
     
@@ -63,13 +63,13 @@ function draw(){
         y : newCoords[1]
     }
 
-    if(snakeCollision(tail, snake) === true){
+    if(snakeCollision(tail, snake)){
         gameOver();
     }
 
     snake.unshift(tail);
 
-    if(bordersCollision(snake) === true){
+    if(bordersCollision(snake)){
         gameOver();
     }
 }
@@ -101,7 +101,7 @@ function menu(score){
     ctx.strokeText("Your Score:", mapWidth+10, 50);
     ctx.font = '40px times new roman';
     let scoreSize = ctx.measureText(score) 
-    ctx.strokeText(score, (mapWidth+tile*4.5)-scoreSize.width, tile*3);
+    ctx.strokeText(score, (mapWidth + tile * 4.5) - scoreSize.width, tile * 3);
 }
 
 function gameOver(){
@@ -110,7 +110,7 @@ function gameOver(){
 
     ctx.font = '75px times new roman';
     ctx.fillStyle = 'red'
-    ctx.fillText("Game Over", mapWidth/3, mapHeight/2.2);
+    ctx.fillText("Game Over", mapWidth / 3, mapHeight / 2.2);
 }
 
 //--------------------------Movement---------------------------
@@ -164,43 +164,32 @@ function snakeCollision(tail,snake){
 }
 
 function bordersCollision(array){
-    if(array[0].x < 0){
+    if(array[0].x < 0 || array[0].x >= mapWidth || array[0].y < 0 || array[0].y >= mapHeight){
         return true;
-    }
-    if(array[0].y < 0){ 
-        return true;
-    }    
-    if(array[0].x >= mapWidth){
-        return true;
-    }
-    if(array[0].y >= mapHeight){
-        return true;
-    } else {
-        return false;
     }
 }
 
 
 function tileMap(){
-    let snakeMapWidth = 1+mapWidth/tile
-    let snakeMapHeight = 1+mapHeight/tile
+    let snakeMapWidth = 1 + mapWidth/tile
+    let snakeMapHeight = 1 + mapHeight/tile
      for(let i = 0; i < snakeMapWidth; i++){
       ctx.beginPath();
-      ctx.moveTo(i*tile, 0+0.5);
-      ctx.lineTo(i*tile, mapHeight+0.5);
+      ctx.moveTo(i * tile, 0 + 0.5);
+      ctx.lineTo(i * tile, mapHeight + 0.5);
       ctx.stroke();
     }   
     for(let i = 0; i < snakeMapHeight; i++){
       ctx.beginPath();
-      ctx.moveTo(0, i*tile+0.5);
-      ctx.lineTo(mapWidth, i*tile+0.5);
+      ctx.moveTo(0, i * tile + 0.5);
+      ctx.lineTo(mapWidth, i * tile + 0.5);
       ctx.stroke();
     } 
 }
 
 
 function resizeCanvas() {
-    canvas.width = mapWidth+(tile*5);
+    canvas.width = mapWidth + (tile * 5);
     canvas.height = mapHeight;
 }
 

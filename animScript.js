@@ -3,19 +3,19 @@ let ctx;
 
 let tile = 32;
 
-let mapWidth = 22*tile;
-let mapHeight = 16*tile;
+let mapWidth = 22 * tile;
+let mapHeight = 16 * tile;
 
 let snake = [];
 
 snake[0] = {
-  x : Math.floor(Math.random()*22) * tile,
-  y : Math.floor(Math.random()*16) * tile
+  x : Math.floor(Math.random() * 22) * tile,
+  y : Math.floor(Math.random() * 16) * tile
 }
 
 let berry = {
-  x : Math.floor(Math.random()*22) * tile,
-  y : Math.floor(Math.random()*16) * tile
+  x : Math.floor(Math.random() * 22) * tile,
+  y : Math.floor(Math.random() * 16) * tile
 }
 
 const direction = {
@@ -54,8 +54,8 @@ function checkBerryPosition(){
 
 function changeBerryPosition(){
     if(checkBerryPosition() === true){
-        berry.x = Math.floor(Math.random()*22) * tile;
-        berry.y = Math.floor(Math.random()*16) * tile;
+        berry.x = Math.floor(Math.random() * 22) * tile;
+        berry.y = Math.floor(Math.random() * 16) * tile;
         //addTail();
     }
 }
@@ -64,14 +64,14 @@ function changeBerryPosition(){
 function tileMap(){
   for(let i = 0; i < mapHeight; i++){
     ctx.beginPath();
-    ctx.moveTo(i*tile, 0+0.5);
-    ctx.lineTo(i*tile, mapHeight+0.5);
+    ctx.moveTo(i * tile, 0 + 0.5);
+    ctx.lineTo(i * tile, mapHeight + 0.5);
     ctx.stroke();
   }   
   for(let i = 0; i < mapHeight; i++){
     ctx.beginPath();
-    ctx.moveTo(0, i*tile+0.5);
-    ctx.lineTo(mapWidth, i*tile+0.5);
+    ctx.moveTo(0, i * tile + 0.5);
+    ctx.lineTo(mapWidth, i * tile + 0.5);
     ctx.stroke();
   } 
 }
