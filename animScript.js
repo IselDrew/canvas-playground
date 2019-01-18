@@ -1,3 +1,4 @@
+//Isn't working script anymore.
 let canvas;
 let ctx;
 
@@ -44,16 +45,16 @@ function draw() {
     requestAnimationFrame(draw)
 }
 
-function checkBerryPosition(){
-    if(snake[0].x === berry.x && snake[0].y === berry.y){
+function checkBerryPosition() {
+    if (snake[0].x === berry.x && snake[0].y === berry.y) {
         return true;
     } else {
         return false;
     }
 }
 
-function changeBerryPosition(){
-    if(checkBerryPosition() === true){
+function changeBerryPosition() {
+    if (checkBerryPosition() === true) {
         berry.x = Math.floor(Math.random() * 22) * tile;
         berry.y = Math.floor(Math.random() * 16) * tile;
         //addTail();
@@ -61,14 +62,14 @@ function changeBerryPosition(){
 }
 
 
-function tileMap(){
-  for(let i = 0; i < mapHeight; i++){
+function tileMap() {
+  for (let i = 0; i < mapHeight; i++) {
     ctx.beginPath();
     ctx.moveTo(i * tile, 0 + 0.5);
     ctx.lineTo(i * tile, mapHeight + 0.5);
     ctx.stroke();
   }   
-  for(let i = 0; i < mapHeight; i++){
+  for (let i = 0; i < mapHeight; i++) {
     ctx.beginPath();
     ctx.moveTo(0, i * tile + 0.5);
     ctx.lineTo(mapWidth, i * tile + 0.5);
@@ -76,17 +77,17 @@ function tileMap(){
   } 
 }
 
-function collisions(){
-    if(snake[0].x < 0){
+function collisions() {
+    if (snake[0].x < 0) {
       snake[0].x = 0;
     }
-    if(snake[0].y <= 0){
+    if (snake[0].y <= 0) {
         snake[0].y = 0;
     }    
-    if(snake[0].x >= mapWidth){
+    if (snake[0].x >= mapWidth) {
       snake[0].x = mapWidth - tile;
     }
-    if(snake[0].y >= mapHeight){
+    if (snake[0].y >= mapHeight) {
       snake[0].y = mapHeight - tile;
     }
 }
@@ -104,8 +105,7 @@ function onLoadComplete() {
     draw();
 }
 
-function changeDirection()
-{
+function changeDirection() {
   direction.up = false;
   direction.down = false;
   direction.left = false;
