@@ -1,32 +1,40 @@
-const gameTimer = setInterval(draw, 125);//difficulty());
+const gamespeed = 125;
+const gameTimer = setInterval(draw, gamespeed);//difficulty());
 
 let canvas;
-let ctx;
+let ctx; 
 
-let tile = 32;
-let mapSize = [22, 16]
-let mapWidth = mapSize[0] * tile;
-let mapHeight = mapSize[1] * tile;
-let scoreSizeZone = 5;
+const tile = 32;
+const mapSize = [22, 16];
+const mapWidth = mapSize[0] * tile;
+const mapHeight = mapSize[1] * tile;
+const scoreSizeZone = 5;
 
 let snake = [];
 
-const directionKeys = {
-    directionRight: "RIGHT",
-    directionLeft: "LEFT",
-    directionUp: "UP",
-    directionDown: "DOWN"
+const directions = {
+    right : "RIGHT",
+    left : "LEFT",
+    up : "UP",
+    down : "DOWN"
+}
+
+const keys = {
+    right : 37,
+    left : 39,
+    up : 40,
+    down : 38
 }
 
 function generateCoordinate (limit) {
-    return Math.floor(Math.random() * limit) * tile
+    return Math.floor(Math.random() * limit) * tile;
 }
 
 function generateCoordinates () {
     return {
-        x : generateCoordinate(mapSize[0]),
-        y : generateCoordinate(mapSize[1])
-    }
+        x: generateCoordinate(mapSize[0]),
+        y: generateCoordinate(mapSize[1])
+    };
 }
 
 snake[0] = generateCoordinates();
@@ -46,40 +54,42 @@ function draw() {
  
     menu(score);
     
-    for (let i = 0; i< snake.length; i++) {
+    for (let i = 0; i < snake.length; i++) {
         ctx.fillStyle = 'green';
         ctx.fillRect(snake[i].x, snake[i].y, tile, tile);
     }
 
     ctx.fillStyle = 'red';
-    ctx.fillRect(berry.x, berry.y, tile, tile)
+    ctx.fillRect(berry.x, berry.y, tile, tile);
 
-    let snakeXcoord = snake[0].x;
-    let snakeYcoord = snake[0].y;
+    let newCoords = {
+        x : snake[0].x,
+        y : snake[0].y 
+    }
 
-    const newCoords = move(snakeXcoord, snakeYcoord);
+    newCoords = move(newCoords.x, newCoords.y);
     
-    if (newCoords[0] == berry.x && newCoords[1] == berry.y) {
+    if (newCoords.x === berry.x && newCoords.y === berry.y) {
         console.log(score);
-        changeBerryPosition(); //berry = generateCoordinates();
+        berry = generateCoordinates();
     } else { 
         snake.pop();
     }
-        
+    
     let tail = {
-        x : newCoords[0],
-        y : newCoords[1]
-    }
+        x : newCoords.x,
+        y : newCoords.y
+    };  
 
     if (snakeCollision(tail, snake)) {
         gameOver();
-    }
+    };
 
     snake.unshift(tail);
 
     if (bordersCollision(snake)) {
         gameOver();
-    }
+    };
 }
 
 //----------------------------Menu parts-------------------------
@@ -106,9 +116,9 @@ function difficulty() {
 */
 function menu(score) {
     ctx.font = '30px times new roman';
-    ctx.strokeText("Your Score:", mapWidth+10, 50);
+    ctx.strokeText("Your Score:", mapWidth + 10, 50);
     ctx.font = '40px times new roman';
-    let scoreSize = ctx.measureText(score) 
+    let scoreSize = ctx.measureText(score);
     ctx.strokeText(score, (mapWidth + tile * 4.5) - scoreSize.width, tile * 3);
 }
 
@@ -117,63 +127,51 @@ function gameOver() {
     clearInterval(gameTimer);
 
     ctx.font = '75px times new roman';
-    ctx.fillStyle = 'red'
+    ctx.fillStyle = 'red';
     ctx.fillText("Game Over", mapWidth / 3, mapHeight / 2.2);
 }
 
 //--------------------------Movement---------------------------
 let direction;
 
-function keyWasPressed (event) {
-    
-    const keys = {
-        keyRight: 37,
-        keyLeft: 39,
-        keyUp: 40,
-        keyDown: 38
-    } //would it be better to define it as global object like directionKeys?
+function keyWasPressed(event) {
 
 
     let key = event.keyCode;
-    if ( key === keys.keyRight && direction !== directionKeys.directionRight) {
-        direction = directionKeys.directionLeft;
-    } else if (key === keys.keyDown && direction !== directionKeys.directionDown) {
-        direction = directionKeys.directionUp;
-    } else if (key === keys.keyLeft && direction !== directionKeys.directionLeft) {
-        direction = directionKeys.directionRight;
-    } else if (key === keys.keyUp && direction !== directionKeys.directionUp) {
-        direction = directionKeys.directionDown;
+    if ( key === keys.right && direction !== directions.right) {
+        direction = directions.left;
+    } else if (key === keys.down && direction !== directions.down) {
+        direction = directions.up;
+    } else if (key === keys.left && direction !== directions.left) {
+        direction = directions.right;
+    } else if (key === keys.up && direction !== directions.up) {
+        direction = directions.down;
     } 
 }
 
 function move(x, y) {
     //Movement for snake
-    if (direction === directionKeys.directionUp) {
+    if (direction === directions.up) {
         y -= tile;
     }
-    if (direction === directionKeys.directionRight) {
+    if (direction === directions.right) {
         x += tile;
     }
-    if (direction === directionKeys.directionDown) {
+    if (direction === directions.down) {
         y += tile;
     }
-    if (direction === directionKeys.directionLeft) {
+    if (direction === directions.left) {
         x -= tile;
     }
-    const coords = [x, y];
-
-    return coords;
-}
-
-function changeBerryPosition() {
-    berry = generateCoordinates();
+    
+    return {x, y};
 }
 
 //-------------------------Map Logic---------------------------
 
 function snakeCollision(tail,snake) {
     for (let i = 0; i < snake.length; i++) {
-        if (tail.x == snake[i].x && tail.y == snake[i].y) {
+        if (tail.x === snake[i].x && tail.y === snake[i].y) {
             return true;
         }
     }
@@ -188,11 +186,11 @@ function bordersCollision(array) {
 
 
 function tileMap() {
-    let snakeMapWidth = 1 + mapWidth/tile
-    let snakeMapHeight = 1 + mapHeight/tile
+    let snakeMapWidth = 1 + mapWidth/tile;
+    let snakeMapHeight = 1 + mapHeight/tile;
      for (let i = 0; i < snakeMapWidth; i++) {
       ctx.beginPath();
-      ctx.moveTo(i * tile, 0 + 0.5);
+      ctx.moveTo(i * tile, 0.5); //0.5
       ctx.lineTo(i * tile, mapHeight + 0.5);
       ctx.stroke();
     }   
