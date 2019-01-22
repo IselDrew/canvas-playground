@@ -1,4 +1,4 @@
-const gamespeed = 125;
+const gamespeed = 100;
 const gameTimer = setInterval(draw, gamespeed);//difficulty());
 
 let canvas;
@@ -69,51 +69,31 @@ function draw() {
 
     newCoords = move(newCoords.x, newCoords.y);
     
-    if (newCoords.x === berry.x && newCoords.y === berry.y) {
-        console.log(score);
-        berry = generateCoordinates();
+    let head = {
+        x : newCoords.x,
+        y : newCoords.y
+    };  
+    
+    if (head.x === berry.x && head.y === berry.y) {
+         berry = berryRegeneration();   
     } else { 
         snake.pop();
     }
     
-    let tail = {
-        x : newCoords.x,
-        y : newCoords.y
-    };  
-
-    if (snakeCollision(tail, snake)) {
+    if (snakeCollision(head, snake)) {
         gameOver();
     };
 
-    snake.unshift(tail);
+    snake.unshift(head);
 
     if (bordersCollision(snake)) {
         gameOver();
     };
 }
 
+
 //----------------------------Menu parts-------------------------
-/*
-function difficulty() {
-    let gameSpeed = 125; //defalut 
-    let difficulty = prompt("Choose difficulty:\n(easy, normal, hard, impossible) ").toLowerCase();
-        switch (difficulty) {
-            case 'easy':
-                gameSpeed = 200;
-                break;
-            case 'normal':
-                gameSpeed = 125;
-                break;
-            case 'hard':
-                gameSpeed = 90;
-                break;
-            case 'impossible':
-                gameSpeed = 60;
-                break;
-        }
-        return gameSpeed;
-}
-*/
+
 function menu(score) {
     ctx.font = '30px times new roman';
     ctx.strokeText("Your Score:", mapWidth + 10, 50);
@@ -135,8 +115,6 @@ function gameOver() {
 let direction;
 
 function keyWasPressed(event) {
-
-
     let key = event.keyCode;
     if ( key === keys.right && direction !== directions.right) {
         direction = directions.left;
@@ -147,6 +125,7 @@ function keyWasPressed(event) {
     } else if (key === keys.up && direction !== directions.up) {
         direction = directions.down;
     } 
+   // console.log(direction)
 }
 
 function move(x, y) {
@@ -163,15 +142,16 @@ function move(x, y) {
     if (direction === directions.left) {
         x -= tile;
     }
-    
     return {x, y};
 }
 
 //-------------------------Map Logic---------------------------
 
-function snakeCollision(tail,snake) {
-    for (let i = 0; i < snake.length; i++) {
-        if (tail.x === snake[i].x && tail.y === snake[i].y) {
+function snakeCollision(objHead,arrSnake) {
+    for (let i = 0; i < arrSnake.length - 1; i++) {
+        // console.log("Head pos: ", tail.x / tile, tail.y / tile)
+        // console.log("Elem pos:", snake[i].x / tile, snake[i].y / tile)
+        if (objHead.x === arrSnake[i].x && objHead.y === arrSnake[i].y) {
             return true;
         }
     }
@@ -184,6 +164,16 @@ function bordersCollision(array) {
     }
 }
 
+function berryRegeneration() {
+    let checkBerry = generateCoordinates();
+    for (let i = 0; i < snake.length; i++) {
+        if (snake[i].x === checkBerry.x && snake[i].y === checkBerry.y) {
+            // console.log("ALERT! Regenerating berry coord's");
+            checkBerry = generateCoordinates();
+        }
+    }
+    return checkBerry;
+}
 
 function tileMap() {
     let snakeMapWidth = 1 + mapWidth/tile;
