@@ -1,5 +1,5 @@
 const gamespeed = 100;
-const gameTimer = setInterval(draw, gamespeed);//difficulty());
+const gameTimer = setInterval(draw, gamespeed);
 
 let canvas;
 let ctx; 
@@ -54,10 +54,13 @@ function draw() {
  
     menu(score);
     
-    for (let i = 0; i < snake.length; i++) {
+    for (let i = 1; i < snake.length; i++) {
         ctx.fillStyle = 'green';
         ctx.fillRect(snake[i].x, snake[i].y, tile, tile);
     }
+
+    ctx.fillStyle = 'black';
+    ctx.fillRect(snake[0].x, snake[0].y, tile, tile);
 
     ctx.fillStyle = 'red';
     ctx.fillRect(berry.x, berry.y, tile, tile);
@@ -73,13 +76,17 @@ function draw() {
         x : newCoords.x,
         y : newCoords.y
     };  
-    
+
+    let checkBerry = berry; 
+   
     if (head.x === berry.x && head.y === berry.y) {
-         berry = berryRegeneration();   
+         checkBerry = generateCoordinates();  
     } else { 
         snake.pop();
     }
-    
+
+    berryValidation(checkBerry); //Johnny B. Goode
+   
     if (snakeCollision(head, snake)) {
         gameOver();
     };
@@ -93,7 +100,6 @@ function draw() {
 
 
 //----------------------------Menu parts-------------------------
-
 function menu(score) {
     ctx.font = '30px times new roman';
     ctx.strokeText("Your Score:", mapWidth + 10, 50);
@@ -164,16 +170,17 @@ function bordersCollision(array) {
     }
 }
 
-function berryRegeneration() {
-    let checkBerry = generateCoordinates();
+function berryValidation(berryCoords) {
     for (let i = 0; i < snake.length; i++) {
-        if (snake[i].x === checkBerry.x && snake[i].y === checkBerry.y) {
-            // console.log("ALERT! Regenerating berry coord's");
-            checkBerry = generateCoordinates();
+        if (snake[i].x === berryCoords.x && snake[i].y === berryCoords.y) {
+            console.log("ALERT! Regenerating berry coord's");
+            berryCoords = generateCoordinates();
+        } else {
+            berry = berryCoords;
         }
-    }
-    return checkBerry;
+    } 
 }
+
 
 function tileMap() {
     let snakeMapWidth = 1 + mapWidth/tile;
