@@ -1,11 +1,12 @@
-const gamespeed = 500;
+const gamespeed = 600;
 const gameTimer = setInterval(draw, gamespeed);
 
 let canvas;
 let ctx; 
 
 const tile = 32;
-const mapSize = [5, 5];
+const mapSize = [3, 3];
+//const mapSize = [20, 16]; //original map size
 const mapWidth = mapSize[0] * tile;
 const mapHeight = mapSize[1] * tile;
 
@@ -16,9 +17,10 @@ let isGameOver = false;
 
 let snake = [generateCoordinates()];
 let head;
+let snakeLength = 1;
 let berry = generateCoordinates();
 
-let currentDirection;
+let currentDirection = undefined;
 let direction;
 
 const directions = {
@@ -52,8 +54,8 @@ function render() {
     ctx.clearRect(0, 0, mapWidth  + (tile * scoreSizeZone), mapHeight);
     
     //map
-    let snakeMapWidth = 1 + mapWidth/tile;
-    let snakeMapHeight = 1 + mapHeight/tile;
+    let snakeMapWidth = 1 + mapWidth / tile;
+    let snakeMapHeight = 1 + mapHeight / tile;
     for (let i = 0; i < snakeMapWidth; i++) {
         ctx.beginPath();
         ctx.moveTo(i * tile, 0.5); //0.5
@@ -83,6 +85,12 @@ function render() {
     ctx.fillStyle = 'black';
     ctx.fillRect(snake[0].x, snake[0].y, tile, tile);
 
+    //snake tail
+    for (let i = 1; i < snake.length; i++) {
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(snake[snake.length - 1].x, snake[snake.length - 1].y, tile, tile);
+    }
+
     //score
     ctx.font = '30px times new roman';
     ctx.strokeText("Your Score:", mapWidth + 10, 50);
@@ -101,7 +109,7 @@ function render() {
 }
 
 function draw() {
-    score = (snake.length - 1) * 10;
+    //score = (snake.length - 1) * 10;
 
     if (!currentDirection) {
         currentDirection = direction;
@@ -118,15 +126,18 @@ function draw() {
     
     let checkBerry = berry; 
     
-    console.log("Before pop:", snake.length); 
+   // console.log("Before pop:", snake.length); 
 
     if (head.x === berry.x && head.y === berry.y) {
          checkBerry = generateCoordinates();  
+         snakeLength++;
     } else { 
         snake.pop();
     }
+
+    score = (snakeLength - 1) * 10;
    
-    console.log("After pop:", snake.length); 
+    // console.log("After pop:", snake.length); 
 
     while (!isBerryCoordsValid(snake, checkBerry)) {
         console.log("Alert, regenerating coords")
@@ -145,7 +156,6 @@ function draw() {
         gameOver();
     }
 }
-
 
 //----------------------------Menu parts-------------------------
 function gameOver() {
@@ -187,7 +197,7 @@ function move(x, y) {
 //-------------------------Map Logic---------------------------
 
 function snakeCollision(objHead,arrSnake) {
-    for (let i = 0; i < arrSnake.length; i++) {
+    for (let i = 0; i < arrSnake.length - 1; i++) {
         if (objHead.x === arrSnake[i].x && objHead.y === arrSnake[i].y) {
             return true;
         }
