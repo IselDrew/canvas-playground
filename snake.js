@@ -1,26 +1,28 @@
-const gamespeed = 600;
-const gameTimer = setInterval(draw, gamespeed);
+const gamespeed = 150;
+let gameTimer;
 
 let canvas;
 let ctx; 
 
 const tile = 32;
-const mapSize = [3, 3];
-//const mapSize = [20, 16]; //original map size
+// const mapSize = [3, 3]; //debug map size
+const mapSize = [20, 16]; //original map size
 const mapWidth = mapSize[0] * tile;
 const mapHeight = mapSize[1] * tile;
 
-let score = 0;
-const scoreSizeZone = 5;
-
 let isGameOver = false;
+let isGameGoing = false;
 
 let snake = [generateCoordinates()];
 let head;
-let snakeLength = 1;
-let berry = generateCoordinates();
 
-let currentDirection = undefined;
+let berry = generateCoordinates();
+while (!isBerryCoordsValid(snake, berry)) {
+    console.log("Alert, regenerating coords");
+    berry = generateCoordinates();
+}
+
+let currentDirection;
 let direction;
 
 const directions = {
@@ -51,18 +53,16 @@ function generateCoordinates () {
 
 function render() {
     ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, mapWidth  + (tile * scoreSizeZone), mapHeight);
+    ctx.clearRect(0, 0, mapWidth, mapHeight);
     
     //map
-    let snakeMapWidth = 1 + mapWidth / tile;
-    let snakeMapHeight = 1 + mapHeight / tile;
-    for (let i = 0; i < snakeMapWidth; i++) {
+    for (let i = 0; i < mapSize[0]; i++) {
         ctx.beginPath();
-        ctx.moveTo(i * tile, 0.5); //0.5
+        ctx.moveTo(i * tile, 0.5);
         ctx.lineTo(i * tile, mapHeight + 0.5);
           ctx.stroke();
     }   
-    for (let i = 0; i < snakeMapHeight; i++) {
+    for (let i = 0; i < mapSize[1]; i++) {
         ctx.beginPath();
         ctx.moveTo(0, i * tile + 0.5);
         ctx.lineTo(mapWidth, i * tile + 0.5);
@@ -85,22 +85,16 @@ function render() {
     ctx.fillStyle = 'black';
     ctx.fillRect(snake[0].x, snake[0].y, tile, tile);
 
-    //snake tail
-    for (let i = 1; i < snake.length; i++) {
-        ctx.fillStyle = 'blue';
-        ctx.fillRect(snake[snake.length - 1].x, snake[snake.length - 1].y, tile, tile);
-    }
-
-    //score
-    ctx.font = '30px times new roman';
-    ctx.strokeText("Your Score:", mapWidth + 10, 50);
-    ctx.font = '40px times new roman';
-    let scoreSize = ctx.measureText(score);
-    ctx.strokeText(score, (mapWidth + tile * 4.5) - scoreSize.width, tile * 3);
+    // //score
+    // ctx.font = '30px times new roman';
+    // ctx.strokeText("Your Score:", mapWidth + 10, 50);
+    // ctx.font = '40px times new roman';
+    // let scoreSize = ctx.measureText(score);
+    // ctx.strokeText(score, (mapWidth + tile * 4.5) - scoreSize.width, tile * 3);
 
     //GameOver
     if (isGameOver) { 
-        ctx.font = '75px times new roman';
+        ctx.font = '45px times new roman';
         ctx.fillStyle = 'red';
         ctx.fillText("Game Over", mapWidth / 3, mapHeight / 2.2);
     }
@@ -109,8 +103,6 @@ function render() {
 }
 
 function draw() {
-    //score = (snake.length - 1) * 10;
-
     if (!currentDirection) {
         currentDirection = direction;
     }
@@ -124,27 +116,17 @@ function draw() {
         y : newCoords.y
     };  
     
-    let checkBerry = berry; 
-    
-   // console.log("Before pop:", snake.length); 
-
     if (head.x === berry.x && head.y === berry.y) {
-         checkBerry = generateCoordinates();  
-         snakeLength++;
+         berry = generateCoordinates();
     } else { 
         snake.pop();
     }
 
-    score = (snakeLength - 1) * 10;
-   
-    // console.log("After pop:", snake.length); 
 
-    while (!isBerryCoordsValid(snake, checkBerry)) {
-        console.log("Alert, regenerating coords")
-        checkBerry = generateCoordinates();
+    while (!isBerryCoordsValid(snake, berry)) {
+        console.log("Alert, regenerating coords");
+        berry = generateCoordinates();
     }
-
-    berry = checkBerry;
 
     if (snakeCollision(head, snake)) {
         gameOver();
@@ -155,16 +137,29 @@ function draw() {
     if (bordersCollision(head)) {
         gameOver();
     }
+
+    renderScore(snake.length - 1);
 }
 
 //----------------------------Menu parts-------------------------
 function gameOver() {
     clearInterval(gameTimer);
     isGameOver = true;
+    alert("Your score is " + renderScore(snake.length - 1));
 }
+
+function renderScore(score) {
+    console.log('score', score);
+    return score;
+  }
 
 //--------------------------Movement---------------------------
 function keyWasPressed(event) {
+    if (!isGameGoing) {
+        gameTimer = setInterval(draw, gamespeed);
+        isGameGoing = true;
+    }
+
     let key = event.keyCode;
     if ( key === keys.right && currentDirection !== directions.right) {
         direction = directions.left;
@@ -196,9 +191,9 @@ function move(x, y) {
 
 //-------------------------Map Logic---------------------------
 
-function snakeCollision(objHead,arrSnake) {
-    for (let i = 0; i < arrSnake.length - 1; i++) {
-        if (objHead.x === arrSnake[i].x && objHead.y === arrSnake[i].y) {
+function snakeCollision(head,snake) {
+    for (let i = 0; i < snake.length; i++) {
+        if (head.x === snake[i].x && head.y === snake[i].y) {
             return true;
         }
     }
@@ -221,11 +216,9 @@ function isBerryCoordsValid(snake, berry) {
     return true;
 }
 
-
-
 //--------------------------Other--------------------------
 function resizeCanvas() {
-    canvas.width = mapWidth + (tile * scoreSizeZone);
+    canvas.width = mapWidth;
     canvas.height = mapHeight;
 }
 
@@ -234,6 +227,7 @@ function onLoadComplete() {
     document.body.appendChild(canvas);
     resizeCanvas(); //1. put size of canvas window
     requestAnimationFrame(render); //2. draw objects
+    renderScore(0);
 }
 
 //---------------------EventListeners----------------------
