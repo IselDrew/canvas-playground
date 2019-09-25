@@ -6,6 +6,6 @@ This is an old fashioned snake game made with JavaScript and CanvasHTML. In late
 
 Open index.html with your browser.
 
-## Game Demo
+## Game Preview
 
 ![Snake Game Demo](demo/snakeDemo.gif)
