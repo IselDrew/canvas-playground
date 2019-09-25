@@ -14,7 +14,6 @@ let isGameOver = false;
 let isGameGoing = false;
 
 let snake = [generateCoordinates()];
-let head;
 
 let berry = generateCoordinates();
 while (!isBerryCoordsValid(snake, berry)) {
@@ -111,7 +110,7 @@ function draw() {
     
     currentDirection = direction;
 
-    head = {
+    const head = {
         x : newCoords.x,
         y : newCoords.y
     };  
