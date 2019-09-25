@@ -4,6 +4,10 @@ This is an old fashioned snake game made with JavaScript and CanvasHTML. In late
 
 ## Getting started
 
+Clone repository:
+
+`git clone https://github.com/IselDrew/Snake-js-canvas.git`
+
 Open index.html with your browser.
 
 ## Game Preview
