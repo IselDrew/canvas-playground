@@ -13,3 +13,7 @@ Open index.html with your browser.
 ## Game Preview
 
 ![Snake Game Demo](demo/snakeDemo.gif)
+
+## Acknowledgments
+
+Special thanks to [sonarct](https://github.com/sonarct) for help and inspiration.
