@@ -14,6 +14,8 @@ Open index.html with your browser.
 
 ![Snake Game Demo](demo/snakeDemo.gif)
 
+[Live demo](https://iseldrew.github.io/Snake-js-canvas/)
+
 ## Acknowledgments
 
 Special thanks to [sonarct](https://github.com/sonarct) for help and inspiration.
