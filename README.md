@@ -1,6 +1,6 @@
 # Retro Snake Game
 
-This is an old fashioned snake game made with JavaScript and CanvasHTML. In latest versions I've tried to use OOP style instead of functional style.
+This is an old fashioned snake game made with JavaScript and CanvasHTML. In latest versions I've tried to implement OOP style instead of functional style.
 
 ## Getting started
 
